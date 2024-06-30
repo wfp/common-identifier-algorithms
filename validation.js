@@ -1,0 +1,173 @@
+const toml = require('toml');
+
+
+// MAIN VALIDATION
+// ---------------
+
+function validateValueWithList(validatorList, value) {
+    return validatorList.reduce((memo, validator) => {
+        // check if the validator says OK
+        let result = validator.validate(value);
+        // if failed add to the list of errors
+        if (result) {
+            memo.push(result);
+        }
+        return memo;
+    }, [])
+}
+
+function validateRowWithListDict(validatorListDict, row) {
+    // TODO: should all columns in the validatorListDict checked or base it on the row?
+    return Object.keys(row).reduce((memo, fieldName) => {
+        // check if there is a validatorList for the field
+        let validatorList = validatorListDict[fieldName];
+        // if not skip this column
+        if (!Array.isArray(validatorList)) {
+            return memo;
+        }
+
+        let fieldValue = row[fieldName];
+
+        // use the validators
+        memo[fieldName] = validateValueWithList(validatorList, fieldValue);
+
+        return memo;
+    }, {})
+}
+
+// VALIDATOR FACTORY
+// ------------------
+
+const regexpValidatorFactory = require('./validators/regexp');
+const optionsValidatorFactory = require('./validators/options');
+
+const makeMaxFieldLengthValidator = require('./validators/max_field_length');
+const makeFieldTypeValidator = require('./validators/field_type');
+const makeLanguageCheckValidator = require('./validators/language_check');
+
+const makeMinValueValidator = require('./validators/min_value');
+const makeMaxValueValidator = require('./validators/max_value');
+
+const makeDateDiffValidator = require('./validators/date_diff');
+
+const VALIDATOR_FACTORIES = {
+    // Regexp validators have a number of possible names (for ease of use)
+    "regex": regexpValidatorFactory,
+    "regexp": regexpValidatorFactory,
+    "regex_match": regexpValidatorFactory,
+
+    "options": optionsValidatorFactory,
+
+    "max_field_length": makeMaxFieldLengthValidator,
+
+    "field_type": makeFieldTypeValidator,
+
+    "language_check": makeLanguageCheckValidator,
+
+    "min_value": makeMinValueValidator,
+    "max_value": makeMaxValueValidator,
+
+    "date_diff": makeDateDiffValidator,
+};
+
+
+// Factory function to create a validator from an options object.
+//
+// Uses the 'op' value in the object to match the type based on the
+// VALIDATOR_FACTORIES dictionnary
+function makeValidator(opts) {
+    // check if there is an 'op' in the object
+    let op = opts.op;
+    if (typeof op !== 'string') {
+        throw new Error(`Validator configuration is missing the 'op' field: ${JSON.stringify(opts)}`);
+    }
+
+    // check if there is a value for the key in the factory object
+    let validatorFactory = VALIDATOR_FACTORIES[op];
+    if (typeof validatorFactory !== 'function') {
+        throw new Error(`Cannot find validator for type: '${op}'`);
+    }
+
+    // if yes use the factory function
+    return validatorFactory(opts);
+}
+
+// Takes a list of validator options and creates a list of validators from it
+function makeValidatorList(optsList) {
+    return optsList.map(makeValidator);
+}
+
+// Takes a dict of <field name> => <list of validator option dicts> Dict and
+// returns a map of <field name> => <validator list>.
+//
+// This function merges the "*" field validations into each field's validator list
+function makeValidatoryListDict(validationOpts) {
+    // the "*" field denotes validators targeting all fields
+    let allFieldValidators = validationOpts["*"];
+
+    // TODO: check if this covers all cases of missing "*" validators list
+    if (!Array.isArray(allFieldValidators)) {
+        allFieldValidators = [];
+    }
+
+    //
+    return Object.keys(validationOpts).reduce((memo, field) => {
+        // if the field is the "*" skip this bit
+        if (field === "*") {
+            return memo;
+        }
+
+        // check if the validator options are an array for the current field
+        let fieldValidatorOpts = validationOpts[field];
+        if (!Array.isArray(fieldValidatorOpts)) {
+            throw new Error(`Expected a list of validator options for the field '${field}' -- got: ${JSON.stringify(fieldValidatorOpts)}`);
+        }
+
+        // construct the list of validators for the field from the current
+        // and the "*" validator options
+        let fullValidatorOptions = fieldValidatorOpts.concat(allFieldValidators);
+        let validatorList = makeValidatorList(fullValidatorOptions);
+
+        // assign it to the object
+        memo[field] = validatorList;
+
+
+        return memo;
+    }, {})
+}
+
+//////////////////////////////////////////////////////////////////////
+
+var fs = require('fs');
+
+let config = toml.parse(fs.readFileSync("config.toml", 'utf-8'));
+
+let DATA = [
+    {
+        dob_year: 1970,
+        category: "CASH-MPA",
+        amount: 2500,
+    },
+    {
+        dob_year: 1972,
+        category: "CASH-RENT",
+        amount: 15000,
+    },
+    {
+        dob_year: 12,
+        category: "ASDASODHU",
+        amount: 129313,
+    },
+    {
+        dob_year: 2025,
+        category: 12345,
+        amount: 1,
+    },
+];
+
+let validatorDict = makeValidatoryListDict(config.validations);
+
+DATA.forEach(row => {
+    let results = validateRowWithListDict(validatorDict, row);
+    console.log("ROW: \t", row, "\n", results, "\n--------------")
+})
