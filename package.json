@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "csv": "^6.3.9",
     "toml": "^3.0.0"
   }
 }
