@@ -1,28 +1,6 @@
 const ValidatorBase = require('./base');
+const makeValueValidator = require("./value_base");
 
-class MinValueValidator extends ValidatorBase {
-    constructor(minValue, opts) {
-        super("min_value", opts)
-        this.minValue = minValue;
-    }
-
-    // the default message
-    defaultMessage() {
-        return `must be at least: ${this.minValue}`;
-    }
-
-    validate(value) {
-        // must be a string
-        if (typeof value !== 'number') {
-            return this.failWith("must be a number");
-        }
-
-        return this.minValue > value ? this.fail() : this.success();
-    }
-
-}
-
-// Factory function for the MinValueValidator
 function makeMinValueValidator(opts) {
     let minValue = opts.value;
 
@@ -31,8 +9,17 @@ function makeMinValueValidator(opts) {
         throw new Error(`MinValue validator must have a 'value' with a number -- ${JSON.stringify(opts)}`)
     }
 
-    // return a new validator
-    return new MinValueValidator(minValue, opts);
+    return makeValueValidator("min_value", `must be at least ${minValue}`, (v) => {
+        // attempt to convert to a number
+        let numericValue = parseFloat(v);
+        // not a number is a failed validation
+        if (isNaN(numericValue)) {
+            return false;
+        }
+
+        return numericValue >= minValue;
+
+    }, opts);
 }
 
 // export the factory function

@@ -138,36 +138,74 @@ function makeValidatoryListDict(validationOpts) {
 
 //////////////////////////////////////////////////////////////////////
 
-var fs = require('fs');
+function test() {
+    var fs = require('fs');
 
-let config = toml.parse(fs.readFileSync("config.toml", 'utf-8'));
+    let config = toml.parse(fs.readFileSync("config.toml", 'utf-8'));
 
-let DATA = [
-    {
-        dob_year: 1970,
-        category: "CASH-MPA",
-        amount: 2500,
-    },
-    {
-        dob_year: 1972,
-        category: "CASH-RENT",
-        amount: 15000,
-    },
-    {
-        dob_year: 12,
-        category: "ASDASODHU",
-        amount: 129313,
-    },
-    {
-        dob_year: 2025,
-        category: 12345,
-        amount: 1,
-    },
-];
+    let DATA = [
+        {
+            dob_year: 1970,
+            category: "CASH-MPA",
+            amount: 2500,
+        },
+        {
+            dob_year: 1972,
+            category: "CASH-RENT",
+            amount: 15000,
+        },
+        {
+            dob_year: 12,
+            category: "ASDASODHU",
+            amount: 129313,
+        },
+        {
+            dob_year: 2025,
+            category: 12345,
+            amount: 1,
+        },
+    ];
 
-let validatorDict = makeValidatoryListDict(config.validations);
+    let validatorDict = makeValidatoryListDict(config.validations);
 
-DATA.forEach(row => {
-    let results = validateRowWithListDict(validatorDict, row);
-    console.log("ROW: \t", row, "\n", results, "\n--------------")
-})
+    DATA.forEach(row => {
+        let results = validateRowWithListDict(validatorDict, row);
+        console.log("ROW: \t", row, "\n", results, "\n--------------")
+    })
+
+}
+
+function validateDocumentWithListDict(validatorDict, document) {
+    let results = document.sheets.map((sheet) => {
+        let results = sheet.data.map((row) => {
+            // do the actual validation
+            let results = validateRowWithListDict(validatorDict, row);
+            let compactResults = Object.keys(results).reduce((memo, col) => {
+                let colResults = results[col];
+                if (colResults.length > 0) {
+                    memo.push({ column: col, errors: colResults });
+                }
+                return memo;
+            }, []);
+            // to know if the whole row is valid check every column in the results
+            let ok = Object.keys(results).reduce((memo, col) => {
+                return memo && results[col].length === 0;
+            }, true);
+            // package it up
+            return { row, ok: compactResults.length === 0, errors: compactResults };
+        });
+        return {
+            sheet: sheet.name,
+            ok: !results.some((res) => !res.ok),
+            results
+        };
+    });
+
+    return results;
+}
+
+module.exports = {
+    makeValidatoryListDict,
+    // validateRowWithListDict,
+    validateDocumentWithListDict,
+}
