@@ -1,4 +1,5 @@
 const toml = require('toml');
+const {Document, Sheet} = require('./document')
 
 
 // MAIN VALIDATION
@@ -101,7 +102,7 @@ function makeValidatorList(optsList) {
 // returns a map of <field name> => <validator list>.
 //
 // This function merges the "*" field validations into each field's validator list
-function makeValidatoryListDict(validationOpts) {
+function makeValidatorListDict(validationOpts) {
     // the "*" field denotes validators targeting all fields
     let allFieldValidators = validationOpts["*"];
 
@@ -166,7 +167,7 @@ function test() {
         },
     ];
 
-    let validatorDict = makeValidatoryListDict(config.validations);
+    let validatorDict = makeValidatorListDict(config.validations);
 
     DATA.forEach(row => {
         let results = validateRowWithListDict(validatorDict, row);
@@ -175,6 +176,7 @@ function test() {
 
 }
 
+// Validates a full document with the pre-generated validator list dict
 function validateDocumentWithListDict(validatorDict, document) {
     let results = document.sheets.map((sheet) => {
         let results = sheet.data.map((row) => {
@@ -204,8 +206,54 @@ function validateDocumentWithListDict(validatorDict, document) {
     return results;
 }
 
+// Generates a document for output based on the validation results.
+// sourceConfig is required to map the original column names in the error messages
+function makeValidationResultDocument(sourceConfig, results) {
+
+    let fieldNameMapping = sourceConfig.columns.reduce((memo, col) => {
+        return Object.assign(memo, {[col.alias]: col.name})
+    }, {});
+
+
+    return new Document(results.map((sheetResult) => {
+
+        return new Sheet(sheetResult.sheet, sheetResult.results.map((rowResult) => {
+            // build an error message
+            let errorList = rowResult.errors.map((error) => {
+
+                // find the column name
+                let columnHumanName = fieldNameMapping[error.column] || error.column;
+                return error.errors.map((err) => {
+                    return `${columnHumanName} ${err.msg}`
+                }).join(", ")
+            });
+            // combine with the row onject
+            return Object.assign({
+                errors: errorList.join(";  "),
+            }, rowResult.row)
+        }));
+    }));
+}
+
+function makeValidationResultOutputConfiguration(sourceConfig) {
+    // // check if results is empty
+    // if (resultsSheet.data.length === 0) {
+    //     return { columns: [] };
+    // }
+    // // get a list of columns from the first object in the results sheet
+    // let columnsInResults = Object.keys(resultsSheet.data[0]);
+    // re-map the column names to their original version
+
+
+    // generate a list of column mappings
+    return { columns: sourceConfig.columns.concat([{name: "Errors", alias: "errors" }]) };
+}
+
 module.exports = {
-    makeValidatoryListDict,
+    makeValidatorListDict,
     // validateRowWithListDict,
     validateDocumentWithListDict,
+
+    makeValidationResultDocument,
+    makeValidationResultOutputConfiguration,
 }

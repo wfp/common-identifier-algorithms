@@ -14,96 +14,96 @@ function validateEncoderConfig(config) {
     return [];
 }
 
-class EncoderBase {
+// class EncoderBase {
 
-    constructor(mapping) {
-        this.mapping = mapping;
-    }
-
-
-    // internal helper to return a full name (with a timestamp according to the config)
-    _getOutputNameFor(baseFileName) {
-        // TODO: add logic from config
-        return baseFileName;
-    }
-
-    _generateHeaderRow() {
-        return this.mapping.columns.reduce((memo, col) => {
-            return Object.assign(memo, { [col.alias] : col.name });
-        },{})
-    }
+//     constructor(mapping) {
+//         this.mapping = mapping;
+//     }
 
 
-    // Starts the wiriting of a new document (could be a single output file or multiple)
-    startDocument(document, outputPath, options={}) {
-        throw new Error("not implemented");
-    }
+//     // internal helper to return a full name (with a timestamp according to the config)
+//     _getOutputNameFor(baseFileName) {
+//         // TODO: add logic from config
+//         return baseFileName;
+//     }
 
-    // Ends wiriting the document
-    endDocument(document) {
-        throw new Error("not implemented");
-    }
-
-
-    // Writes a Sheet to the pre-determined output
-    writeSheet(sheet, config) {
-        throw new Error("not implemented");
-    }
-
-}
+//     _generateHeaderRow() {
+//         return this.mapping.columns.reduce((memo, col) => {
+//             return Object.assign(memo, { [col.alias] : col.name });
+//         },{})
+//     }
 
 
-class CsvEncoder extends EncoderBase {
-    constructor(mapping, options) {
-        super(mapping)
+//     // Starts the wiriting of a new document (could be a single output file or multiple)
+//     startDocument(document, outputPath, options={}) {
+//         throw new Error("not implemented");
+//     }
 
-        this.options = options;
-
-        // the base path of the document we'll write
-        this.basePath = null;
-    }
-
-    startDocument(document, outputPath, options={}) {
-        let opts = Object.assign({
-            // default options go here
-        }, options);
-
-        // store the base path
-        this.basePath = outputPath;
-    }
-
-    // Ends wiriting the document
-    endDocument(document) {
-        // no base path means no document yet, so we'll skip
-        if (!this.basePath) {
-            return;
-        }
-
-        // otherwise we'll return
-        // TODO: this is where metadata injection (writing a summary text file next to the output files) can happen
-        return;
-    }
+//     // Ends wiriting the document
+//     endDocument(document) {
+//         throw new Error("not implemented");
+//     }
 
 
-    // Writes a Sheet to the pre-determined output
-    writeSheet(sheet, config) {
-        // no base path means no document yet, so we'll skip
-        if (!this.basePath) {
-            throw new Error("No output path provided.");
-        }
+//     // Writes a Sheet to the pre-determined output
+//     writeSheet(sheet, config) {
+//         throw new Error("not implemented");
+//     }
 
-        // generate the full output path
-        let outputBaseName = `${this.basePath}-${sheet.name}`;
-        let outputPath = this._getOutputNameFor(outputBaseName);
+// }
 
-        // attempt to write the data from the sheet as rows
-        let fullData = [this._generateHeaderRow()].concat( sheet.data);
-        let generated = stringify(fullData, {});
 
-        console.log("-------- ", outputPath, ` ----\n\n${generated}`);
-    }
+// class CsvEncoder extends EncoderBase {
+//     constructor(mapping, options) {
+//         super(mapping)
 
-}
+//         this.options = options;
+
+//         // the base path of the document we'll write
+//         this.basePath = null;
+//     }
+
+//     startDocument(document, outputPath, options={}) {
+//         let opts = Object.assign({
+//             // default options go here
+//         }, options);
+
+//         // store the base path
+//         this.basePath = outputPath;
+//     }
+
+//     // Ends wiriting the document
+//     endDocument(document) {
+//         // no base path means no document yet, so we'll skip
+//         if (!this.basePath) {
+//             return;
+//         }
+
+//         // otherwise we'll return
+//         // TODO: this is where metadata injection (writing a summary text file next to the output files) can happen
+//         return;
+//     }
+
+
+//     // Writes a Sheet to the pre-determined output
+//     writeSheet(sheet, config) {
+//         // no base path means no document yet, so we'll skip
+//         if (!this.basePath) {
+//             throw new Error("No output path provided.");
+//         }
+
+//         // generate the full output path
+//         let outputBaseName = `${this.basePath}-${sheet.name}`;
+//         let outputPath = this._getOutputNameFor(outputBaseName);
+
+//         // attempt to write the data from the sheet as rows
+//         let fullData = [this._generateHeaderRow()].concat( sheet.data);
+//         let generated = stringify(fullData, {});
+
+//         console.log("-------- ", outputPath, ` ----\n\n${generated}`);
+//     }
+
+// }
 
 
 function encodeDocument(encoder, document, outputPath, options={}, sheetConfig={}) {
@@ -140,11 +140,14 @@ function validationResultToDocument(results) {
     // console.dir(decoded, { depth: null });
 
     // VALIDATION
-    let validatorDict = validation.makeValidatoryListDict(config.validations);
+    let validatorDict = validation.makeValidatorListDict(config.validations);
     let validationResult = validation.validateDocumentWithListDict(validatorDict, decoded);
     console.dir(validationResult, {depth: null});
 
-    let encoder = new CsvEncoder(config.destination, {});
+    // ENCODE
+
+    const makeCsvEncoder = require('./encoding/csv');
+    let encoder = makeCsvEncoder(config.destination, {});
 
 
     decoded.sheets.push({ name: "errors",  })

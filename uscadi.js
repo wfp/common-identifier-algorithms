@@ -1,16 +1,95 @@
 const crypto = require('node:crypto');
 // https://github.com/kartik1998/phonetics
 const Phonetics = require('phonetics');
-// https://github.com/words/soundex-code
-const {soundex} = require('soundex-code');
 
+// https://github.com/words/soundex-code
+// This library requires a dynamic import instead of the usual require
+const soundexCode = import('soundex-code');
+
+// USCADI uses RFC4648 base32 -- NodeJs has no default implementation for that
+const base32 = require('hi-base32');
+
+// the output encoding format for the hashes
+const HASH_ENCODING = "base64";
+
+// As soundex is loaded async, we need to update a global reference to it
+// otherwise we'd have to make all calls async :(
+let soundex = Phonetics.soundex;
+
+// soundexCode.then((lib) => soundex = lib.soundex )
+
+
+class BaseHasher {
+    constructor(config) {
+        this.tr_engine = new TrEngine(CAMEL_AR2SAFEBW);
+        this.config = config;
+    }
+
+
+    // attempt to transliterate the incoming string using the
+    // tr_engine.map_string()
+    transliterateString(value) {
+        return this.tr_engine.map_string(value);
+    }
+
+    // helps with translating the arabic fields when concatenating for
+    //
+    translateValue(value) {
+        const transliteratedStr = this.transliterateString(value);
+        let v = {
+            transliterated: transliteratedStr,
+            transliteratedMetaphone: Phonetics.metaphone(transliteratedStr),
+            soundex: soundex(value),
+        }
+        return v;
+
+        // if latin versions of names don't exist, transliterate the Arabic names into Latin characters
+        // TODO: check if the col already exists
+        // TODO: is the base "_la" column needed anywhere?
+        clonedRow[col + "_la"] = transliteratedStr;
+
+        // normalise names in latin characters using metaphone
+        clonedRow[col + "_la_mp"] = Phonetics.metaphone(transliteratedStr);
+
+        // compute the Arabic soundex code from the arabic names
+        clonedRow[col + "_sx"] = soundex(originalStr);
+
+        // TODO: implement me
+        return value
+    }
+}
+
+// A class encapsulating the hashing algorithm along
+// with a number of helper functions (like exposing a translate function)
+class Sha256Hasher extends BaseHasher {
+    constructor(config) {
+        super(config);
+    }
+
+    // Generates a USCADI hash based on the configuration from an already concatenated
+    // string
+    generateHash(stringValue) {
+        return base32.encode(crypto.createHash('sha256').update(stringValue).digest()); //.digest(HASH_ENCODING);
+    }
+
+}
+
+function makeUscadiHasher(config) {
+    // TODO: config check
+    switch (config.strategy.toLowerCase()) {
+        case 'sha256':
+            return new Sha256Hasher(config);
+        default:
+            throw new Error(`Unknown hash strategy in config: '${config.strategy}'`);
+    }
+}
 
 
 function tokeniseSha256(field, saltValue, config={}) {
     let hash = crypto.createHash('sha256');
     let saltedField = `${saltValue}${field}`;
     hash.update(saltedField);
-    return hash.digest('hex');
+    return hash.digest(HASH_ENCODING);
 }
 
 
@@ -123,7 +202,7 @@ function translateNameFields(row, tr_engine, sx_engine, columnsToTranslate) {
 
 class TrEngine {
     constructor(charmap, defaultValue) {
-        this.charmap = charmap;
+        this.charmap = charmap.charMap;
         this.defaultValue = defaultValue;
     }
 
@@ -198,4 +277,10 @@ const CAMEL_AR2SAFEBW = {
         "\u06A4": "B",
         "\u06AF": "G"
     }
+}
+
+
+module.exports = {
+    UscadiHasher: Sha256Hasher,
+    makeUscadiHasher,
 }

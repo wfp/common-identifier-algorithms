@@ -12,11 +12,11 @@ class LanguageCheckValidator extends ValidatorBase {
 
     // the default message
     defaultMessage() {
-        return `must be in the language "${this.language}"`;
+        return `must be in the language '${this.language}'`;
     }
 
     validate(value) {
-        return CHECKER_FNS[this.language](value) ? this.fail() : this.success();
+        return CHECKER_FNS[this.language](value) ? this.success() : this.fail();
     }
 
 }

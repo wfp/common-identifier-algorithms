@@ -9,7 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "commander": "^12.1.0",
     "csv": "^6.3.9",
-    "toml": "^3.0.0"
+    "hi-base32": "^0.5.1",
+    "phonetics": "^1.0.7",
+    "soundex-code": "^2.0.1",
+    "toml": "^3.0.0",
+    "xlsx": "^0.18.5"
   }
 }
