@@ -139,6 +139,7 @@ value = "./config/public_system.asc" # static string | ./<path_to_some_file>
 [destination]
 columns = [
     { name = "USCADI", alias = "USCADI" },
+    { name = "USCADI Source", alias = "USCADI_src" },
     { name = "Organization", alias = "organization" },
     { name = "Category", alias = "category" },
     { name = "Currency", alias = "currency" },
@@ -147,6 +148,10 @@ columns = [
     { name = "End (yyyyMMdd)", alias = "end" },
     { name = "Document Hash", alias = "document_hash" },
 ]
+# The postfix of the output file. Anything inside double curly braces
+# will be treated as a date format string.
+# FORMATTING TOKEN GUIDE: https://date-fns.org/v3.6.0/docs/lightFormat
+postfix = "-OUTPUT-{{yyyy-MM-dd--HH-mm}}"
 
 [destination_map]
 columns = [
@@ -154,3 +159,25 @@ columns = [
     { name = "USCADI", alias = "USCADI" },
     { name = "Document Hash", alias = "document_hash" },
 ]
+postfix = "-MAPPING-{{yyyy-MM-dd--HH-mm}}"
+
+[destination_errors]
+columns = [
+    { name = "Individual Reference", alias = "individual_reference" },
+    { name = "First Name", alias = "first_name" },
+    { name = "Last Name", alias = "last_name" },
+    { name = "Father First Name", alias = "father_first_name" },
+    { name = "Father Last Name", alias = "father_last_name" },
+    { name = "Mother First Name", alias = "mother_first_name" },
+    { name = "Year of Birth", alias = "dob_year" },
+    { name = "Document Type", alias = "document_type" },
+    { name = "Document ID", alias = "document_id" },
+    { name = "Organization", alias = "organization" },
+    { name = "Category", alias = "category" },
+    { name = "Currency", alias = "currency" },
+    { name = "Amount", alias = "amount" },
+    { name = "Start (yyyyMMdd)", alias = "start" },
+    { name = "End (yyyyMMdd)", alias = "end" },
+    { name = "Errors", alias = "errors" },
+]
+postfix = "-ERRORS-{{yyyy-MM-dd--HH-mm}}"

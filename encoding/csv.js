@@ -55,10 +55,12 @@ class CsvEncoder extends EncoderBase {
         // console.log(fullData);
         let generated = stringify(fullData, {});
 
-        console.log("-------- ", outputPath, ` ----\n\n${generated}`);
+        // console.log("-------- ", outputPath, ` ----\n\n${generated}`);
 
         // write to the disk
         fs.writeFileSync(outputPath, generated, 'utf-8');
+
+        console.log("[CSV] Written", outputPath);
     }
 
 }

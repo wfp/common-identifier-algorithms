@@ -16,6 +16,10 @@ const HASH_ENCODING = "base64";
 // otherwise we'd have to make all calls async :(
 let soundex = Phonetics.soundex;
 
+const Asoundex = require('./uscadi/asoundex')
+let SoundexExecutor = new Asoundex();
+
+
 // soundexCode.then((lib) => soundex = lib.soundex )
 
 
@@ -35,27 +39,17 @@ class BaseHasher {
     // helps with translating the arabic fields when concatenating for
     //
     translateValue(value) {
+        // clean the column value
+        let cleanedValue = cleanNameColumn(value);
+        // transliterate the value
         const transliteratedStr = this.transliterateString(value);
-        let v = {
+        // package the output
+        return {
             transliterated: transliteratedStr,
             transliteratedMetaphone: Phonetics.metaphone(transliteratedStr),
-            soundex: soundex(value),
+            // soundex: soundex(value),
+            soundex: SoundexExecutor.getPhoneticString(value),
         }
-        return v;
-
-        // if latin versions of names don't exist, transliterate the Arabic names into Latin characters
-        // TODO: check if the col already exists
-        // TODO: is the base "_la" column needed anywhere?
-        clonedRow[col + "_la"] = transliteratedStr;
-
-        // normalise names in latin characters using metaphone
-        clonedRow[col + "_la_mp"] = Phonetics.metaphone(transliteratedStr);
-
-        // compute the Arabic soundex code from the arabic names
-        clonedRow[col + "_sx"] = soundex(originalStr);
-
-        // TODO: implement me
-        return value
     }
 }
 
@@ -84,6 +78,23 @@ function makeUscadiHasher(config) {
     }
 }
 
+
+// cleans a single value in a name column (whitespace and other)
+function cleanNameColumn(value) {
+    // remove all whitespace and digits from all name fields
+    let cleaned = value.replaceAll(/[\s]+/g, "")
+        .replaceAll(/[\d]+/g, "")
+    // for names with Arabic letters, run the following regex replacements
+    // ة becomes ه
+    cleaned = cleaned.replaceAll("ة", "ه");
+    // any of: أ  ئ ؤ ء ى becomes ا
+    cleaned = cleaned.replaceAll(/أئؤءى/g, "ا");
+
+    return cleaned;
+}
+
+
+// UNUSED
 
 function tokeniseSha256(field, saltValue, config={}) {
     let hash = crypto.createHash('sha256');
@@ -114,20 +125,6 @@ function tokeniseScrypt(field, saltValue, hashConfig) {
 
 
 function cleanNameFields(row, columnsToTranslate) {
-
-    // cleans a single value in a name column
-    function cleanNameColumn(value) {
-        // remove all whitespace and digits from all name fields
-        let cleaned = value.replaceAll(/[\s]+/, "")
-            .replaceAll(/[\d]+/, "")
-        // for names with Arabic letters, run the following regex replacements
-        // ة becomes ه
-        cleaned = cleaned.replaceAll("ة", "ه");
-        // any of: أ  ئ ؤ ء ى becomes ا
-        cleaned = cleaned.replaceAll(/أئؤءى/, "ا");
-
-        return cleaned;
-    }
 
     // Create a new copy of the row to modify
     let clonedRow = Object.assign({}, row);
@@ -278,6 +275,7 @@ const CAMEL_AR2SAFEBW = {
         "\u06AF": "G"
     }
 }
+
 
 
 module.exports = {

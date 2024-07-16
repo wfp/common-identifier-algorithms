@@ -1,3 +1,13 @@
+const { lightFormat } = require("date-fns");
+
+// Name formatting via Date-Fns lightformat.
+// TOKEN GUIDE: https://date-fns.org/v3.6.0/docs/lightFormat
+function formatName(name, date) {
+    return name.replace(/\{\{(.*?)\}\}/, (match, capture) => {
+        let formatString = match.slice(2, -2);
+        return lightFormat(date, formatString);
+    })
+}
 
 class EncoderBase {
 
@@ -8,8 +18,10 @@ class EncoderBase {
 
     // internal helper to return a full name (with a timestamp according to the config)
     _getOutputNameFor(baseFileName) {
+        let fullName = `${baseFileName}${this.mapping.postfix}`;
         // TODO: add logic from config
-        return baseFileName;
+        return formatName(fullName, new Date())
+        // return baseFileName;
     }
 
     _generateHeaderRow() {
@@ -48,6 +60,19 @@ class EncoderBase {
 
         // end the document
         this.endDocument(document);
+    }
+
+
+    // Attempts to filter out the columns that should not be present in the
+    _filterDataBasedOnConfig(data) {
+        // build a set of keys
+        let keysArray = this.mapping.columns.map((col) => col.alias);
+        // let keysSet = new Set(keysArray);
+        return data.map((row) => {
+            return keysArray.reduce((newRow, k) => {
+                return Object.assign(newRow, { [k]: row[k] });
+            }, {})
+        })
     }
 
 

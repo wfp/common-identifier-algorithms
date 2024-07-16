@@ -49,12 +49,6 @@ function cleanValueList(fieldValueList) {
     return fieldValueList.map((v) => typeof v === 'string' ? v : "")
 }
 
-// helper that translates a value that is listed as "to-be-translated"
-function translateValue(value) {
-    // TODO: implement me
-    return value;
-}
-
 // Takes the output of `extractAlgoColumnsFromObject` (extracted properties) and
 // return a string with the "refernce" parts concatednated as per the USCADI
 // spec
@@ -162,11 +156,11 @@ function generateHashesForDocument(algorithmConfig, uscadi, document) {
 
 const { program } = require('commander');
 program
-
-  .argument('<path>', 'Input file to use')
-  .option('-l, --limit <number>', 'Limit the input to the given number of rows')
-  .option('-c, --config <path>', 'The config file to use', 'config.toml')
-  .option('-o, --output <path>', 'The output base path', '/tmp/test');
+    .argument('<path>', 'Input file to use')
+    .option('-l, --limit <number>', 'Limit the input to the given number of rows')
+    .option('-f, --format <csv|xlsx>', 'The output format (if not specified the input format is used)')
+    //   .option('-c, --config <path>', 'The config file to use', 'config.toml')
+    .option('-o, --output <path>', 'The output base path', '/tmp/test');
 
 program.parse();
 
@@ -177,72 +171,80 @@ const options = program.opts();
 
 (async () => {
     let {makeUscadiHasher} = require('./uscadi');
+    const {decoderForFile, fileTypeOf} = require('./decoding');
 
+    // Load the config
     let config = Config.getConfig();
 
-    // const inputFilePath = "test_files/basic.csv";
-    const inputFilePath = "test_files/uscadi_input_data.csv";
 
-    // load CSV
-    const makeCsvDecoder = require('./decoding/csv');
-    let csvDecoder = makeCsvDecoder(config.source);
+    // the input file path
+    let inputFilePath = program.args[0];
+    let inputFileType = fileTypeOf(inputFilePath);
 
-    let decoded = await csvDecoder.decodeFile(inputFilePath);
+    if (!inputFileType) {
+        throw new Error("Unknown input file type");
+    }
 
+    // DECODE
+    // ======
+
+    // find a decoder
+    let decoderFactoryFn = decoderForFile(inputFileType);
+    let decoder = decoderFactoryFn(config.source);
+
+    // decode the data
+    let decoded = await decoder.decodeFile(inputFilePath);
+
+
+    // apply limiting if needed
     if (options.limit) {
-
         console.log("[LOAD] Using input row limit: ",  options.limit);
         decoded.sheets[0].data = decoded.sheets[0].data.slice(0, options.limit);
     }
-    // console.log("=----- DECODED ------- \n", decoded.sheets[0]);
 
     // VALIDATION
+    // ==========
     const validation = require("./validation");
     let validatorDict = validation.makeValidatorListDict(config.validations);
     let validationResult = validation.validateDocumentWithListDict(validatorDict, decoded);
     // console.dir(validationResult, {depth: null});
 
     // HASHING
+    // =======
     let hasher = makeUscadiHasher(config.algorithm.hash);
-
-
-
-    // let extractedObj = extractAlgoColumnsFromObject(config.algorithm.columns, obj);
-    // let res = generateHashForExtractedObject(hasher, extractedObj);
     let result = generateHashesForDocument(config.algorithm, hasher, decoded)
-
-    // console.log("=----- EXTRACTED ------- \n", extractedObj);
-    // console.log("=----- HASHED ------- \n", res);
-    // console.log("=----- OUT ------- \n");
-    // console.dir(result, { depth: null })
 
 
 
     // OUTPUT
     // ------
-    const makeCsvEncoder = require('./encoding/csv');
 
-    function outputDocumentWithConfig(postfix, destinationConfig, document) {
+
+    const {encoderForFile} = require('./encoding');
+
+    // if the user specified a format use that, otherwise use the input format
+    const outputFileType = options.format || inputFileType;
+    // const makeCsvEncoder = require('./encoding/csv');
+
+    // helper to output a document with a specific config
+    function outputDocumentWithConfig(destinationConfig, document) {
 
         let basePath = options.output;
 
-        let encoder = makeCsvEncoder(destinationConfig, {});
+        let encoderFactoryFn = encoderForFile(outputFileType);
+        let encoder = encoderFactoryFn(destinationConfig, {});
 
-
-        // result.sheets.push(new Sheet("Errors", []))
-
-        encoder.encodeDocument(document, `${basePath}${postfix}`);
-
+        encoder.encodeDocument(document, basePath);
     }
 
     // output the base document
-    outputDocumentWithConfig("", config.destination, result);
+    outputDocumentWithConfig(config.destination, result);
     // output the mapping document
-    outputDocumentWithConfig("-MAPPING", config.destination_map, result);
+    outputDocumentWithConfig(config.destination_map, result);
 
-    let resultOutputConfig = validation.makeValidationResultOutputConfiguration(config.source, validationResult)
+    // let resultOutputConfig = validation.makeValidationResultOutputConfiguration(config.source, validationResult)
     let validationResultDocument = validation.makeValidationResultDocument(config.source, validationResult);
 
-    outputDocumentWithConfig("-ERRORS", resultOutputConfig, validationResultDocument);
+    outputDocumentWithConfig(config.destination_errors, validationResultDocument);
 
 })()

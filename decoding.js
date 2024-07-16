@@ -1,17 +1,49 @@
-const fs = require('fs/promises');
-const csv = require('csv-parse/sync');
-
-const Config = require('./config');
+const {FILE_CSV, FILE_XLSX} = require('./document');
 
 const makeCsvDecoder = require('./decoding/csv');
+const makeXlsxDecoder = require('./decoding/xlsx');
 
 
-(async ()=>{
+// Returns the file type based on the file name
+function fileTypeOf(filePath) {
+    if (filePath.endsWith(".xlsx")) {
+        return FILE_XLSX
+    }
 
-    let config = Config.getConfig();
+    if (filePath.endsWith(".csv")) {
+        return FILE_CSV
+    }
 
-    let csvDecoder = makeCsvDecoder(config.source);
 
-    let decoded = await csvDecoder.decodeFile("test_files/basic.csv");
-    console.log(decoded.sheets[0])
-})()
+    // unknown type
+    return null;
+}
+
+// Returns an appropriate decoder for a file
+function decoderForFile(fileType) {
+    switch (fileType) {
+        case FILE_XLSX:
+            return makeXlsxDecoder;
+        case FILE_CSV:
+            return makeCsvDecoder;
+        default:
+            throw new Error(`Unknown file type: '${filePath}'`)
+    }
+}
+
+
+module.exports = {
+    fileTypeOf,
+    decoderForFile,
+}
+
+// (async ()=>{
+//     const Config = require('./config');
+
+//     let config = Config.getConfig();
+
+//     let csvDecoder = makeCsvDecoder(config.source);
+
+//     let decoded = await csvDecoder.decodeFile("test_files/basic.csv");
+//     console.log(decoded.sheets[0])
+// })()

@@ -1,4 +1,7 @@
 
+const FILE_CSV = ".csv";
+const FILE_XLSX = ".xlsx";
+
 // The data class describing a sheet
 class Sheet {
     constructor(name, data) {
@@ -14,5 +17,6 @@ class Document {
 }
 
 module.exports = {
-    Sheet, Document
+    Sheet, Document,
+    FILE_CSV, FILE_XLSX,
 }
