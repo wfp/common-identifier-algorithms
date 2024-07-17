@@ -42,13 +42,13 @@ class BaseHasher {
         // clean the column value
         let cleanedValue = cleanNameColumn(value);
         // transliterate the value
-        const transliteratedStr = this.transliterateString(value);
+        const transliteratedStr = this.transliterateString(cleanedValue);
         // package the output
         return {
             transliterated: transliteratedStr,
             transliteratedMetaphone: Phonetics.metaphone(transliteratedStr),
             // soundex: soundex(value),
-            soundex: SoundexExecutor.getPhoneticString(value),
+            soundex: SoundexExecutor.getPhoneticString(cleanedValue),
         }
     }
 }
