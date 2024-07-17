@@ -211,7 +211,7 @@ const options = program.opts();
 
     // HASHING
     // =======
-    let hasher = makeUscadiHasher(config.algorithm.hash);
+    let hasher = makeUscadiHasher(config.algorithm);
     let result = generateHashesForDocument(config.algorithm, hasher, decoded)
 
 

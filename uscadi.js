@@ -1,10 +1,7 @@
 const crypto = require('node:crypto');
+const importSaltFile = require('./uscadi/salt-importer');
 // https://github.com/kartik1998/phonetics
 const Phonetics = require('phonetics');
-
-// https://github.com/words/soundex-code
-// This library requires a dynamic import instead of the usual require
-const soundexCode = import('soundex-code');
 
 // USCADI uses RFC4648 base32 -- NodeJs has no default implementation for that
 const base32 = require('hi-base32');
@@ -12,21 +9,22 @@ const base32 = require('hi-base32');
 // the output encoding format for the hashes
 const HASH_ENCODING = "base64";
 
-// As soundex is loaded async, we need to update a global reference to it
-// otherwise we'd have to make all calls async :(
-let soundex = Phonetics.soundex;
+const makeArabicSoundexEngine = require('./uscadi/arabic-soundex');
 
-const Asoundex = require('./uscadi/asoundex')
-let SoundexExecutor = new Asoundex();
+// the soundex engine we'll use
+let arabicSoundexEngine = makeArabicSoundexEngine();
 
-
-// soundexCode.then((lib) => soundex = lib.soundex )
 
 
 class BaseHasher {
     constructor(config) {
         this.tr_engine = new TrEngine(CAMEL_AR2SAFEBW);
         this.config = config;
+
+        // load the salt value based on the config
+        this.saltValue = (config.salt.source.toLowerCase() === 'file') ?
+            importSaltFile(config.salt.value) :
+            config.salt.value;
     }
 
 
@@ -47,8 +45,7 @@ class BaseHasher {
         return {
             transliterated: transliteratedStr,
             transliteratedMetaphone: Phonetics.metaphone(transliteratedStr),
-            // soundex: soundex(value),
-            soundex: SoundexExecutor.getPhoneticString(cleanedValue),
+            soundex: arabicSoundexEngine.soundex(cleanedValue)
         }
     }
 }
@@ -63,18 +60,19 @@ class Sha256Hasher extends BaseHasher {
     // Generates a USCADI hash based on the configuration from an already concatenated
     // string
     generateHash(stringValue) {
-        return base32.encode(crypto.createHash('sha256').update(stringValue).digest()); //.digest(HASH_ENCODING);
+        let hashDigest = crypto.createHash('sha256').update(this.saltValue).update(stringValue).digest();
+        return base32.encode(hashDigest);
     }
 
 }
 
 function makeUscadiHasher(config) {
     // TODO: config check
-    switch (config.strategy.toLowerCase()) {
+    switch (config.hash.strategy.toLowerCase()) {
         case 'sha256':
             return new Sha256Hasher(config);
         default:
-            throw new Error(`Unknown hash strategy in config: '${config.strategy}'`);
+            throw new Error(`Unknown hash strategy in config: '${config.hash.strategy}'`);
     }
 }
 
@@ -93,108 +91,6 @@ function cleanNameColumn(value) {
     return cleaned;
 }
 
-
-// UNUSED
-
-function tokeniseSha256(field, saltValue, config={}) {
-    let hash = crypto.createHash('sha256');
-    let saltedField = `${saltValue}${field}`;
-    hash.update(saltedField);
-    return hash.digest(HASH_ENCODING);
-}
-
-
-// Required config keys:
-// `num_iterations` -> scrypt N (cost)
-// `block_size` -> scypt block size
-// `parallelization`
-// `size` -> scrypt keyLen
-function tokeniseScrypt(field, saltValue, hashConfig) {
-    let scrypt_config = {
-        cost: hashConfig.num_iterations,
-        blockSize: hashConfig.block_size,
-        parallelization: hashConfig.parallelism,
-    };
-    return crypto.scryptSync(field, saltValue, hashConfig.size, scrypt_config )
-        .toString('hex');
-}
-
-
-// Columm magic
-// ============
-
-
-function cleanNameFields(row, columnsToTranslate) {
-
-    // Create a new copy of the row to modify
-    let clonedRow = Object.assign({}, row);
-
-    // each name column is to be cleaned
-    return columnsToTranslate.reduce((rowData, colName) => {
-        rowData[colName] = cleanNameColumn(rowData[colName]);
-        return rowData;
-    }, clonedRow);
-
-
-}
-
-
-// The names of the fields that were / will be translated
-function translatedFieldNames(columnsToTranslate) {
-    let columnsTranslated = new Set();
-
-    columnsToTranslate.forEach(col => {
-        // add the two columns to the list of translated columns
-        columnsTranslated.add(col + "_la_mp").add(col + "_sx")
-    });
-
-    return Array.from(columnsTranslated);
-}
-
-// Translate the name fields of a row
-function translateNameFields(row, tr_engine, sx_engine, columnsToTranslate) {
-
-    function postfixColumnNames(postfix) {
-        return columnsToTranslate.map((col) => col + postfix)
-    }
-
-    // attempt to transliterate the incoming string using the
-    // tr_engine.map_string()
-    function transliterateString(value) {
-        return tr_engine.map_string(value);
-    }
-
-    // Create a new copy of the row to modify
-    let clonedRow = Object.assign({}, row);
-
-    // if latin versions of names don't exist, transliterate the Arabic names into Latin characters
-    // df[name_la_cols] = df[fields].map(transliterate, engine=tr_engine)
-    columnsToTranslate.forEach(col => {
-        const originalStr = clonedRow[col];
-        const transliteratedStr = transliterateString(clonedRow[col]);
-
-        // if latin versions of names don't exist, transliterate the Arabic names into Latin characters
-        // TODO: check if the col already exists
-        // TODO: is the base "_la" column needed anywhere?
-        clonedRow[col + "_la"] = transliteratedStr;
-
-        // normalise names in latin characters using metaphone
-        clonedRow[col + "_la_mp"] = Phonetics.metaphone(transliteratedStr);
-
-        // compute the Arabic soundex code from the arabic names
-        clonedRow[col + "_sx"] = soundex(originalStr);
-
-    });
-
-    // // normalise names in latin characters using metaphone
-    // df[name_mp_cols] = df[name_la_cols].map(phonetics.metaphone)
-
-    // // compute the Arabic soundex code from the arabic names
-    // df[name_sx_cols] = df[fields].map(sx_engine.soundex)
-    // return (df, [*name_mp_cols, *name_sx_cols])
-
-    return clonedRow;
-}
 
 
 class TrEngine {

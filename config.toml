@@ -133,7 +133,7 @@ size = 32
 
 [algorithm.salt]
 source = "FILE" # STRING | FILE
-value = "./config/public_system.asc" # static string | ./<path_to_some_file>
+value = "./test_files/public_system.asc" # static string | ./<path_to_some_file>
 
 
 [destination]
@@ -151,7 +151,7 @@ columns = [
 # The postfix of the output file. Anything inside double curly braces
 # will be treated as a date format string.
 # FORMATTING TOKEN GUIDE: https://date-fns.org/v3.6.0/docs/lightFormat
-postfix = "-OUTPUT-{{yyyy-MM-dd--HH-mm}}"
+postfix = "-OUTPUT-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 [destination_map]
 columns = [
@@ -159,7 +159,7 @@ columns = [
     { name = "USCADI", alias = "USCADI" },
     { name = "Document Hash", alias = "document_hash" },
 ]
-postfix = "-MAPPING-{{yyyy-MM-dd--HH-mm}}"
+postfix = "-MAPPING-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 [destination_errors]
 columns = [
@@ -180,4 +180,4 @@ columns = [
     { name = "End (yyyyMMdd)", alias = "end" },
     { name = "Errors", alias = "errors" },
 ]
-postfix = "-ERRORS-{{yyyy-MM-dd--HH-mm}}"
+postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
