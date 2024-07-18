@@ -1,6 +1,8 @@
 // Transliteration map (one to one mode) between each normalized Arabic letter
 // (no hamza and tah marbouta) represented in the id property and English letter
 // (capital letter) in the content of the item tag
+
+// This table is used for ArabicSoundex
 module.exports = {
     "ا": "A",
     "ب": "B",

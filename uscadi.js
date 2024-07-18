@@ -6,8 +6,11 @@ const Phonetics = require('phonetics');
 // USCADI uses RFC4648 base32 -- NodeJs has no default implementation for that
 const base32 = require('hi-base32');
 
-const TransliterationMapping = require('./uscadi/transliteration-mapping');
+const transliterateWord = require('./uscadi/transliteration');
+const ar2SafeBwMap = require('./uscadi/transliteration-mapping-ar2safebw');
+
 const makeArabicSoundexEngine = require('./uscadi/arabic-soundex');
+const doubleMetaphone = require('./uscadi/double-metaphone');
 
 
 // the soundex engine we'll use
@@ -33,11 +36,12 @@ class BaseHasher {
         // clean the column value
         let cleanedValue = cleanNameColumn(value);
         // transliterate the value
-        const transliteratedStr = transliterateWord(cleanedValue);
+        const transliteratedStr = transliterateWord(cleanedValue, ar2SafeBwMap);
         // package the output
         return {
             transliterated: transliteratedStr,
-            transliteratedMetaphone: Phonetics.metaphone(transliteratedStr),
+            // transliteratedMetaphone: Phonetics.metaphone(transliteratedStr),
+            transliteratedMetaphone: doubleMetaphone(transliteratedStr)[0],
             soundex: arabicSoundexEngine.soundex(cleanedValue)
         }
     }
@@ -84,11 +88,11 @@ function cleanNameColumn(value) {
     return cleaned;
 }
 
-function transliterateWord(word) {
-    return Array.from(word).map((char) => {
-        return TransliterationMapping[char] ||  char
-    }).join('')
-}
+// function transliterateWord(word) {
+//     return Array.from(word).map((char) => {
+//         return TransliterationMapping[char] ||  char
+//     }).join('')
+// }
 
 
 

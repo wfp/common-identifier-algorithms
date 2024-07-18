@@ -439,7 +439,6 @@ function doubleMetaphone(input) {
 
     while (index < length) {
         const char = upperCaseWord[index];
-        console.log("char:", char, {index, length})
         const doubleMetaphone = new DoubleMetaphoneProcessor(index);
         if (char === ' ') {
             index++;
@@ -515,7 +514,6 @@ function doubleMetaphone(input) {
         }
 
         result = doubleMetaphone.next;
-        console.log("RESULT:", result)
 
         if (result.length === 2) {
             if (result[0] && typeof result[0] === 'string') {
@@ -543,28 +541,38 @@ function doubleMetaphone(input) {
     return [primary.join(''), secondary.join('')];
 }
 
-// cleans a single value in a name column (whitespace and other)
-function cleanNameColumn(value) {
-    // remove all whitespace and digits from all name fields
-    let cleaned = value.replaceAll(/[\s]+/g, "")
-        .replaceAll(/[\d]+/g, "")
-    // for names with Arabic letters, run the following regex replacements
-    // ة becomes ه
-    cleaned = cleaned.replaceAll("ة", "ه");
-    // any of: أ  ئ ؤ ء ى becomes ا
-    cleaned = cleaned.replaceAll(/أئؤءى/g, "ا");
+module.exports = doubleMetaphone;
 
-    return cleaned;
+function test() {
+
+    // cleans a single value in a name column (whitespace and other)
+    function cleanNameColumn(value) {
+        // remove all whitespace and digits from all name fields
+        let cleaned = value.replaceAll(/[\s]+/g, "")
+            .replaceAll(/[\d]+/g, "")
+        // for names with Arabic letters, run the following regex replacements
+        // ة becomes ه
+        cleaned = cleaned.replaceAll("ة", "ه");
+        // any of: أ  ئ ؤ ء ى becomes ا
+        cleaned = cleaned.replaceAll(/أئؤءى/g, "ا");
+
+        return cleaned;
+    }
+
+
+    function convertWord(word) {
+        let transliterated = transliterate(cleanNameColumn(word), ar2SafeBwMap);
+        let mp = doubleMetaphone(transliterated);
+        console.log("\t", word, "\t\t", transliterated, '\t\t', mp)
+        return mp;
+    }
+
+    const transliterate = require('./transliteration');
+    const ar2SafeBwMap = require('./transliteration-mapping-ar2safebw');
+
+    ["هايل,عجرمة (العجارمة),رائد,صيداوي,اعتماد",
+    "جدير,تميم,رائد,صيداوي,اعتماد"].forEach(row => row.split(",").forEach(convertWord))
+
 }
 
-
-function convertWord(word) {
-    let transliterated = transliterate(cleanNameColumn(word));
-    let mp = doubleMetaphone(transliterated);
-    console.log("\t", word, "\t\t", transliterated, '\t\t', mp)
-    return mp;
-}
-
-const transliterate = require('./transliteration')
-
-"هايل,عجرمة (العجارمة),رائد,صيداوي,اعتماد".split(",").forEach(convertWord)
+// test()
