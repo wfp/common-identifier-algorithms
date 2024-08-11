@@ -13,6 +13,8 @@ class EncoderBase {
 
     constructor(mapping) {
         this.mapping = mapping;
+        // add every file path the encoder has written to this array
+        this.outputPaths = [];
     }
 
 
@@ -49,6 +51,7 @@ class EncoderBase {
 
 
     // Wraps encoding a whole document using this encoder.
+    // Returns the list of files output
     encodeDocument(document, outputPath, options={}, sheetConfig={}) {
         // start the document
         this.startDocument(document, outputPath, options);
@@ -60,6 +63,8 @@ class EncoderBase {
 
         // end the document
         this.endDocument(document);
+
+        return this.outputPaths;
     }
 
 

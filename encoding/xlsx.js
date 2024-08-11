@@ -40,7 +40,11 @@ class XlsxEncoder extends EncoderBase {
         let fileOutputPath = this._getOutputNameFor(this.basePath) + '.xlsx';
 
         XLSX.writeFile(this.workbook, fileOutputPath, { compression: true });
+
         console.log("[XLSX] Written ", fileOutputPath);
+
+        // add the current file to the list of outputs
+        this.outputPaths.push(fileOutputPath);
         // otherwise we'll return
         // TODO: this is where metadata injection (writing a summary text file next to the output files) can happen
         return;

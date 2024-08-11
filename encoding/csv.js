@@ -60,6 +60,9 @@ class CsvEncoder extends EncoderBase {
         // write to the disk
         fs.writeFileSync(outputPath, generated, 'utf-8');
 
+        // add the current file to the list of outputs
+        this.outputPaths.push(outputPath);
+
         console.log("[CSV] Written", outputPath);
     }
 

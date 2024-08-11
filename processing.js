@@ -1,6 +1,10 @@
 const Config = require('./config');
 const { Sheet, Document } = require('./document');
 
+const {encoderForFile} = require('./encoding');
+let {makeUscadiHasher} = require('./uscadi');
+const {decoderForFile, fileTypeOf} = require('./decoding');
+
 // takes an row object and the "algorithm.columns" config and returns a new
 // object with { static: [<COL VALUES>], to_translate: [..], reference: [...] } columns
 function extractAlgoColumnsFromObject(columnConfig, obj) {
@@ -152,33 +156,41 @@ function generateHashesForDocument(algorithmConfig, uscadi, document) {
     return new Document(sheets);
 }
 
-// COMMAND-LINE WRAPPER
+// Helper that saves a document with the prefered config
+function outputDocumentWithConfig(basePath, outputFileType, destinationConfig, document) {
 
-const { program } = require('commander');
-program
-    .argument('<path>', 'Input file to use')
-    .option('-l, --limit <number>', 'Limit the input to the given number of rows')
-    .option('-f, --format <csv|xlsx>', 'The output format (if not specified the input format is used)')
-    //   .option('-c, --config <path>', 'The config file to use', 'config.toml')
-    .option('-o, --output <path>', 'The output base path', '/tmp/test');
+    let encoderFactoryFn = encoderForFile(outputFileType);
+    let encoder = encoderFactoryFn(destinationConfig, {});
 
-program.parse();
-
-const options = program.opts();
+    return encoder.encodeDocument(document, basePath);
+}
 
 
-// PROCESSING BLOCK
+// return true if the validation was successful
+function isDocumentValid(validationResult) {
+    return !validationResult.some(sheet => !sheet.ok);
+}
 
-(async () => {
-    let {makeUscadiHasher} = require('./uscadi');
-    const {decoderForFile, fileTypeOf} = require('./decoding');
+// Returns the "base name" (the plain file name, the last component of the path, without any directories)
+function baseFileName(filePath) {
+    const splitName = filePath.split(/[\\/]/);
+    const lastComponent = splitName[splitName.length - 1].split(/\.+/);
+    return lastComponent.slice(0,-1).join('.')
+}
+
+
+
+async function preprocessFile(config, inputFilePath, limit) {
+    console.log("------------ preprocessFile -----------------")
+    // let {makeUscadiHasher} = require('./uscadi');
+    // const {decoderForFile, fileTypeOf} = require('./decoding');
 
     // Load the config
-    let config = Config.getConfig();
+    // let config = Config.getConfig();
 
 
     // the input file path
-    let inputFilePath = program.args[0];
+    // let inputFilePath = program.args[0];
     let inputFileType = fileTypeOf(inputFilePath);
 
     if (!inputFileType) {
@@ -197,10 +209,11 @@ const options = program.opts();
 
 
     // apply limiting if needed
-    if (options.limit) {
-        console.log("[LOAD] Using input row limit: ",  options.limit);
-        decoded.sheets[0].data = decoded.sheets[0].data.slice(0, options.limit);
+    if (limit) {
+        console.log("[LOAD] Using input row limit: ",  limit);
+        decoded.sheets[0].data = decoded.sheets[0].data.slice(0, limit);
     }
+
 
     // VALIDATION
     // ==========
@@ -208,6 +221,76 @@ const options = program.opts();
     let validatorDict = validation.makeValidatorListDict(config.validations);
     let validationResult = validation.validateDocumentWithListDict(validatorDict, decoded);
     // console.dir(validationResult, {depth: null});
+
+
+    let validationErrorsOutputFile;
+
+    if (!isDocumentValid(validationResult)) {
+
+        // check if validation is ok -- if yes write the file out
+        let validationResultDocument = validation.makeValidationResultDocument(config.source, validationResult);
+
+        // TODO: output base name
+        const errorOutputBasePath = "/tmp/" + baseFileName(inputFilePath);
+        validationErrorsOutputFile = outputDocumentWithConfig(errorOutputBasePath, inputFileType, config.destination_errors, validationResultDocument);
+        // ensure that we only return a single value
+        if (validationErrorsOutputFile.length > 0) {
+            validationErrorsOutputFile = validationErrorsOutputFile[0];
+        }
+    }
+
+    return {
+        inputData: decoded,
+        validationResult,
+        validationErrorsOutputFile: validationErrorsOutputFile,
+    };
+
+}
+
+
+async function processFile(config, ouputPath, inputFilePath, limit, format) {
+    console.log("------------ preprocessFile -----------------")
+    // let {makeUscadiHasher} = require('./uscadi');
+    const {decoderForFile, fileTypeOf} = require('./decoding');
+
+    // Load the config
+    // let config = Config.getConfig();
+
+
+    // the input file path
+    // let inputFilePath = program.args[0];
+    let inputFileType = fileTypeOf(inputFilePath);
+
+    if (!inputFileType) {
+        throw new Error("Unknown input file type");
+    }
+
+    // DECODE
+    // ======
+
+    // find a decoder
+    let decoderFactoryFn = decoderForFile(inputFileType);
+    let decoder = decoderFactoryFn(config.source);
+
+    // decode the data
+    let decoded = await decoder.decodeFile(inputFilePath);
+
+
+    // apply limiting if needed
+    if (limit) {
+        console.log("[LOAD] Using input row limit: ",  limit);
+        decoded.sheets[0].data = decoded.sheets[0].data.slice(0, limit);
+    }
+
+
+    // VALIDATION
+    // ==========
+    const validation = require("./validation");
+    let validatorDict = validation.makeValidatorListDict(config.validations);
+    let validationResult = validation.validateDocumentWithListDict(validatorDict, decoded);
+    // console.dir(validationResult, {depth: null});
+
+
 
     // HASHING
     // =======
@@ -220,31 +303,144 @@ const options = program.opts();
     // ------
 
 
-    const {encoderForFile} = require('./encoding');
 
     // if the user specified a format use that, otherwise use the input format
-    const outputFileType = options.format || inputFileType;
+    const outputFileType = format || inputFileType;
     // const makeCsvEncoder = require('./encoding/csv');
 
     // helper to output a document with a specific config
     function outputDocumentWithConfig(destinationConfig, document) {
 
-        let basePath = options.output;
+        let basePath = ouputPath;
 
         let encoderFactoryFn = encoderForFile(outputFileType);
         let encoder = encoderFactoryFn(destinationConfig, {});
 
-        encoder.encodeDocument(document, basePath);
+        return encoder.encodeDocument(document, basePath);
     }
+    // console.log(JSON.stringify(result, null, "    "))
 
     // output the base document
-    outputDocumentWithConfig(config.destination, result);
+    let mainOutputFiles = outputDocumentWithConfig(config.destination, result);
     // output the mapping document
     outputDocumentWithConfig(config.destination_map, result);
 
-    // let resultOutputConfig = validation.makeValidationResultOutputConfiguration(config.source, validationResult)
-    let validationResultDocument = validation.makeValidationResultDocument(config.source, validationResult);
+    // // let resultOutputConfig = validation.makeValidationResultOutputConfiguration(config.source, validationResult)
+    // let validationResultDocument = validation.makeValidationResultDocument(config.source, validationResult);
 
-    outputDocumentWithConfig(config.destination_errors, validationResultDocument);
+    // outputDocumentWithConfig(config.destination_errors, validationResultDocument);
 
-})()
+
+    return {
+        // inputData: decoded,
+        outputData: result,
+        outputFilePath: mainOutputFiles,
+    };
+
+
+}
+
+module.exports = {
+    preprocessFile,
+    processFile,
+}
+
+// COMMAND-LINE WRAPPER
+
+// const { program } = require('commander');
+// program
+//     .argument('<path>', 'Input file to use')
+//     .option('-l, --limit <number>', 'Limit the input to the given number of rows')
+//     .option('-f, --format <csv|xlsx>', 'The output format (if not specified the input format is used)')
+//     //   .option('-c, --config <path>', 'The config file to use', 'config.toml')
+//     .option('-o, --output <path>', 'The output base path', '/tmp/test');
+
+// program.parse();
+
+// const options = program.opts();
+
+
+// // PROCESSING BLOCK
+
+// (async () => {
+//     let {makeUscadiHasher} = require('./uscadi');
+//     const {decoderForFile, fileTypeOf} = require('./decoding');
+
+//     // Load the config
+//     let config = Config.getConfig();
+
+
+//     // the input file path
+//     let inputFilePath = program.args[0];
+//     let inputFileType = fileTypeOf(inputFilePath);
+
+//     if (!inputFileType) {
+//         throw new Error("Unknown input file type");
+//     }
+
+//     // DECODE
+//     // ======
+
+//     // find a decoder
+//     let decoderFactoryFn = decoderForFile(inputFileType);
+//     let decoder = decoderFactoryFn(config.source);
+
+//     // decode the data
+//     let decoded = await decoder.decodeFile(inputFilePath);
+
+
+//     // apply limiting if needed
+//     if (options.limit) {
+//         console.log("[LOAD] Using input row limit: ",  options.limit);
+//         decoded.sheets[0].data = decoded.sheets[0].data.slice(0, options.limit);
+//     }
+
+
+//     // VALIDATION
+//     // ==========
+//     const validation = require("./validation");
+//     let validatorDict = validation.makeValidatorListDict(config.validations);
+//     let validationResult = validation.validateDocumentWithListDict(validatorDict, decoded);
+//     // console.dir(validationResult, {depth: null});
+
+
+//     // HASHING
+//     // =======
+//     let hasher = makeUscadiHasher(config.algorithm);
+//     let result = generateHashesForDocument(config.algorithm, hasher, decoded)
+
+
+
+//     // OUTPUT
+//     // ------
+
+
+//     const {encoderForFile} = require('./encoding');
+
+//     // if the user specified a format use that, otherwise use the input format
+//     const outputFileType = options.format || inputFileType;
+//     // const makeCsvEncoder = require('./encoding/csv');
+
+//     // helper to output a document with a specific config
+//     function outputDocumentWithConfig(destinationConfig, document) {
+
+//         let basePath = options.output;
+
+//         let encoderFactoryFn = encoderForFile(outputFileType);
+//         let encoder = encoderFactoryFn(destinationConfig, {});
+
+//         encoder.encodeDocument(document, basePath);
+//     }
+//     console.log(JSON.stringify(result, null, "    "))
+
+//     // output the base document
+//     outputDocumentWithConfig(config.destination, result);
+//     // output the mapping document
+//     outputDocumentWithConfig(config.destination_map, result);
+
+//     // let resultOutputConfig = validation.makeValidationResultOutputConfiguration(config.source, validationResult)
+//     let validationResultDocument = validation.makeValidationResultDocument(config.source, validationResult);
+
+//     outputDocumentWithConfig(config.destination_errors, validationResultDocument);
+
+// })()
