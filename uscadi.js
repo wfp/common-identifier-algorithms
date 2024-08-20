@@ -1,7 +1,5 @@
 const crypto = require('node:crypto');
-const importSaltFile = require('./uscadi/salt-importer');
-// https://github.com/kartik1998/phonetics
-const Phonetics = require('phonetics');
+const loadSaltFile = require('./config/loadSaltFile');
 
 // USCADI uses RFC4648 base32 -- NodeJs has no default implementation for that
 const base32 = require('hi-base32');
@@ -25,7 +23,8 @@ class BaseHasher {
 
         // load the salt value based on the config
         this.saltValue = (config.salt.source.toLowerCase() === 'file') ?
-            importSaltFile(config.salt.value) :
+            // importSaltFile(config.salt.value) :
+            loadSaltFile(config.salt.value) :
             config.salt.value;
     }
 
@@ -40,7 +39,6 @@ class BaseHasher {
         // package the output
         return {
             transliterated: transliteratedStr,
-            // transliteratedMetaphone: Phonetics.metaphone(transliteratedStr),
             transliteratedMetaphone: doubleMetaphone(transliteratedStr)[0],
             soundex: arabicSoundexEngine.soundex(cleanedValue)
         }
@@ -87,12 +85,6 @@ function cleanNameColumn(value) {
 
     return cleaned;
 }
-
-// function transliterateWord(word) {
-//     return Array.from(word).map((char) => {
-//         return TransliterationMapping[char] ||  char
-//     }).join('')
-// }
 
 
 

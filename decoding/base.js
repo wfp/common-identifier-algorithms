@@ -1,6 +1,3 @@
-
-const Config = require('../config');
-
 const { Sheet, Document } = require('../document');
 
 class DecoderBase {

@@ -58,10 +58,6 @@ class XlsxEncoder extends EncoderBase {
             throw new Error("No output path provided.");
         }
 
-        // console.log(" ---------------- SHEET WRITE -----------------")
-        // console.dir(sheet.data, {depth: null})
-        // console.log(" <<<<<<<<<<<<<<<< SHEET END <<<<<<<<<<<<<<<<<")
-
         // SheetJS needs the objects to have only the properties we output
         // so we filter them here
         let fullData = this._filterDataBasedOnConfig(sheet.data); //[this._generateHeaderRow()].concat( sheet.data);

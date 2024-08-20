@@ -46,16 +46,10 @@ class CsvEncoder extends EncoderBase {
         let outputBaseName = `${this.basePath}-${sheet.name}`;
         let outputPath = this._getOutputNameFor(outputBaseName) + '.csv';
 
-        // console.log(" ---------------- SHEET WRITE -----------------")
-        // console.dir(sheet.data, {depth: null})
-        // console.log(" <<<<<<<<<<<<<<<< SHEET END <<<<<<<<<<<<<<<<<")
-
         // attempt to write the data from the sheet as rows
         let fullData = [this._generateHeaderRow()].concat( sheet.data);
         // console.log(fullData);
         let generated = stringify(fullData, {});
-
-        // console.log("-------- ", outputPath, ` ----\n\n${generated}`);
 
         // write to the disk
         fs.writeFileSync(outputPath, generated, 'utf-8');

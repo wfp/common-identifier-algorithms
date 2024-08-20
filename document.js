@@ -1,4 +1,5 @@
 
+// File type constants
 const FILE_CSV = ".csv";
 const FILE_XLSX = ".xlsx";
 
@@ -10,6 +11,7 @@ class Sheet {
     }
 }
 
+// The data class describing a document with many sheets
 class Document {
     constructor(sheets) {
         this.sheets = sheets;

@@ -521,9 +521,6 @@ function doubleMetaphone(input) {
                 secondary.push(result[1]);
             }
             index += result[1];
-                // self.primary_phone += self.next[0]
-                // self.secondary_phone += self.next[0]
-            // self.position += self.next[1]
         } else if (result.length === 3) {
             if (result[0] && typeof result[0] === 'string') {
                 primary.push(result[0]);
@@ -533,9 +530,6 @@ function doubleMetaphone(input) {
             }
             index += result[2];
         }
-        // if (result[0]) primary.push(result[0]);
-        // if (result[1] && typeof result[1] === 'string') secondary.push(result[1]);
-        // index += result[2];
     }
 
     return [primary.join(''), secondary.join('')];
@@ -543,6 +537,7 @@ function doubleMetaphone(input) {
 
 module.exports = doubleMetaphone;
 
+// TODO: check the algorithm output here against WFP python version
 function test() {
 
     // cleans a single value in a name column (whitespace and other)

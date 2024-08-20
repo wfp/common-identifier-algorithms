@@ -36,14 +36,3 @@ module.exports = {
     fileTypeOf,
     decoderForFile,
 }
-
-// (async ()=>{
-//     const Config = require('./config');
-
-//     let config = Config.getConfig();
-
-//     let csvDecoder = makeCsvDecoder(config.source);
-
-//     let decoded = await csvDecoder.decodeFile("test_files/basic.csv");
-//     console.log(decoded.sheets[0])
-// })()

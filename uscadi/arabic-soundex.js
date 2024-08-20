@@ -1,5 +1,4 @@
 const AsoundexMapping = require('./asoundex-mapping');
-const AphonixMapping = require('./aphonix-mapping');
 const TransliterationMapping = require('./transliteration-mapping');
 
 const TARGET_LANGUAGE_ENGLISH = 'en';
