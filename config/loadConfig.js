@@ -4,7 +4,6 @@ const validateConfig = require('./validateConfig');
 const loadSaltFile = require('./loadSaltFile');
 
 const {
-    attemptToReadFileData,
     attemptToReadTOMLData
 } = require('./utils');
 
@@ -12,25 +11,6 @@ const {
 // The encoding used by the config file
 const CONFIG_FILE_ENCODING = "utf-8";
 
-
-// // Attempts to load and clean up the salt file data
-// function loadSaltFile(path) {
-//     // return null;
-//     // TODO: potentially clean up line endings and whitespace here
-//     const saltData = attemptToReadFileData(path, SALT_FILE_ENCODING);
-//     if (!saltData) return;
-
-//     // check if the structure is correct for the file
-//     const CHECK_RX = /-----BEGIN PGP PUBLIC KEY BLOCK-----[A-Za-z0-9+/=\s]+-----END PGP PUBLIC KEY BLOCK-----/
-
-//     if (!CHECK_RX.test(saltData)) {
-//         console.log("SALT FILE Regexp error")
-//         return null;
-//     }
-
-//     console.log("SALT FILE looks OK")
-//     return saltData;
-// }
 
 
 // Main entry point for loading a config file.
@@ -78,9 +58,12 @@ function loadConfig(configPath) {
         }
     }
 
+    // figure out the file path and the validation regexp
     const saltFilePath = configData.algorithm.salt.value;
+    const saltFileValidatorRegexp = configData.algorithm.salt.validator_regex;
+
     // attempt to load the salt file
-    const saltData = loadSaltFile(saltFilePath);
+    const saltData = loadSaltFile(saltFilePath, saltFileValidatorRegexp);
 
     // if the salt file load failed, we have failed
     if (!saltData) {

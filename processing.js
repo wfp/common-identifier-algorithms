@@ -220,11 +220,12 @@ async function preprocessFile(config, inputFilePath, limit) {
 
 
     let validationErrorsOutputFile;
+    let validationResultDocument;
 
     if (!isDocumentValid(validationResult)) {
 
         // check if validation is ok -- if yes write the file out
-        let validationResultDocument = validation.makeValidationResultDocument(config.source, validationResult);
+        validationResultDocument = validation.makeValidationResultDocument(config.source, validationResult);
 
         // The error file is output to the OS's temporary directory
         const errorOutputBasePath = path.join(os.tmpdir(), baseFileName(inputFilePath));
@@ -238,6 +239,7 @@ async function preprocessFile(config, inputFilePath, limit) {
 
     return {
         inputData: decoded,
+        validationResultDocument,
         validationResult,
         validationErrorsOutputFile: validationErrorsOutputFile,
     };
@@ -310,12 +312,13 @@ async function processFile(config, ouputPath, inputFilePath, limit, format) {
     // output the base document
     let mainOutputFiles = outputDocumentWithConfig(config.destination, result);
     // output the mapping document
-    outputDocumentWithConfig(config.destination_map, result);
+    let mappingFilePaths = outputDocumentWithConfig(config.destination_map, result);
 
     return {
         // inputData: decoded,
         outputData: result,
-        outputFilePath: mainOutputFiles,
+        outputFilePaths: mainOutputFiles,
+        mappingFilePaths,
     };
 
 

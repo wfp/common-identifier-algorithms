@@ -8,7 +8,7 @@ version="1.0.8"
 # HTML to display as Terms And Conditions
 terms_and_conditions="""
 
-<p>Lorem 23 ipsum <a href="https://wfp.org" target="_blank">dolor</a> sit amet, <b>consectetur adipiscing</b> elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
+<p>Lorem ipsum <a href="https://wfp.org" target="_blank">dolor</a> sit amet, <b>consectetur adipiscing</b> elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
 
 <p><i>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu</i> fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
@@ -191,3 +191,7 @@ columns = [
     { name = "End (yyyyMMdd)", alias = "end" },
 ]
 postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
+
+
+[signature]
+config_signature="a7363481"

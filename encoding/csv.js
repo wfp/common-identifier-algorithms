@@ -36,14 +36,18 @@ class CsvEncoder extends EncoderBase {
 
 
     // Writes a Sheet to the pre-determined output
-    writeSheet(sheet, config) {
+    writeSheet(sheet, config, { current, length }) {
         // no base path means no document yet, so we'll skip
         if (!this.basePath) {
             throw new Error("No output path provided.");
         }
 
+        // is this the only sheet in the document?
+        const hasOnlyOneSheet = (length === 1);
         // generate the full output path
-        let outputBaseName = `${this.basePath}-${sheet.name}`;
+        let outputBaseName = hasOnlyOneSheet ? this.basePath : `${this.basePath}-${sheet.name}`;
+
+        // if there is only one sheet we don't need the sheet name in the filename
         let outputPath = this._getOutputNameFor(outputBaseName) + '.csv';
 
         // attempt to write the data from the sheet as rows

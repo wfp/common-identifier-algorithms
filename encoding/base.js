@@ -57,8 +57,12 @@ class EncoderBase {
         this.startDocument(document, outputPath, options);
 
         // write all sheets to the document
-        document.sheets.forEach((sheet) => {
-            this.writeSheet(sheet, sheetConfig);
+        document.sheets.forEach((sheet, i) => {
+            // write the sheet and allow the writer to know how many sheets are there
+            this.writeSheet(sheet, sheetConfig, {
+                current: i,
+                length: document.sheets.length,
+            });
         });
 
         // end the document

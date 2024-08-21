@@ -39,6 +39,14 @@ function validateConfig(config) {
         }
     }
 
+    function isValidRegexp(label, v) {
+        try {
+            let _ = new RegExp(v);
+        } catch (e) {
+            return `${label} is not a valid JavaScript Regular Expression`
+        }
+    }
+
     // Generic column mapping
     // ----------------------
     function checkColumnMapping(label, columnMappingObject) {
@@ -57,7 +65,8 @@ function validateConfig(config) {
     function checkMeta(meta) {
         return isObject("meta", meta) ||
             isString("meta.version", meta.version) ||
-            isString("meta.region", meta.region);
+            isString("meta.region", meta.region) ||
+            isString("meta.terms_and_conditions", meta.terms_and_conditions);
     }
 
     // Source & destinations
@@ -116,9 +125,17 @@ function validateConfig(config) {
         }
 
         function checkAlgorithmSalt(algorithmSalt) {
-            // check if there is a salt
-            if (typeof algorithmSalt !== "object")
-                return "Missing algorithm.salt";
+            // // check if there is a salt
+            // if (typeof algorithmSalt !== "object")
+            //     return "Missing algorithm.salt";
+
+            const saltValidationError = isObject("algorithm.salt", algorithmSalt) ||
+                isString("algorithm.salt.validator_regex", algorithmSalt.validator_regex) ||
+                isValidRegexp("algorithm.salt.validator_regex", algorithmSalt.validator_regex)
+
+            if (saltValidationError) {
+                return saltValidationError;
+            }
 
             switch (algorithmSalt.source) {
                 case "FILE":
