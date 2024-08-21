@@ -3,7 +3,7 @@ const fs = require('node:fs');
 
 
 const loadConfig = require('./loadConfig');
-
+const { CONFIG_FILE_ENCODING }= require('./loadConfig')
 
 
 // Returns the prefered Application Data storage location based on the operating system
@@ -11,13 +11,27 @@ function appDataLocation() {
     return process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Preferences' : process.env.HOME + "/.local/share")
 }
 
-const APP_DIR_NAME = "USCADITool";
+const APP_DIR_NAME = "CommonIDTool";
 const CONFIG_FILE_NAME = "config.json";
 
+// the path of the application's data files
+const APP_DIR_PATH = path.join(appDataLocation(), APP_DIR_NAME);
+
 // the path of the store configuration file
-const CONFIG_FILE_PATH = path.join(appDataLocation(), APP_DIR_NAME, CONFIG_FILE_NAME);
+const CONFIG_FILE_PATH = path.join(APP_DIR_PATH, CONFIG_FILE_NAME);
+
 // TODO: this should come from the algorithm
 const BACKUP_CONFIG_FILE_PATH = path.join(__dirname, "..", "config.backup.toml");
+
+
+// Ensure the application's config file directory exists
+// TODO: export this bad boy to also use in the UI's logging path
+function ensureAppDirectoryExists(appDir=APP_DIR_PATH) {
+    if (!fs.existsSync(appDir)) {
+        console.log("Application directory '", appDir, "' does not exits -- creating it");
+        fs.mkdirSync(appDir)
+    }
+}
 
 
 // Attempts to save a configuration file to the designated location.
@@ -32,6 +46,7 @@ function saveConfig(configData, outputPath) {
 
 class ConfigStore {
     constructor() {
+
         this.data = {};
         this.validationResult = {};
         this.hasConfigLoaded = false;
@@ -41,6 +56,7 @@ class ConfigStore {
         // signal that the config we are using is
         // coming from the backup, not a user-provided one
         this.isUsingBackupConfig = false;
+
     }
 
 
@@ -139,6 +155,8 @@ class ConfigStore {
 
     // Overwrites the existing configuration file with the new data
     saveNewConfigData(configData) {
+        // before saving ensure that we can save the configuration
+        ensureAppDirectoryExists();
         // TODO: maybe do a rename w/ timestamp for backup
         // save the config to the output path
         saveConfig(configData, CONFIG_FILE_PATH);

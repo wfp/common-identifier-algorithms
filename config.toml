@@ -69,7 +69,7 @@ dob_year = [
 
 document_type = [
     # default
-    { op = "options", value = [ "NATIONAL_ID", "PERSONAL_ID", "LOCAL_COUNCIL_CARD" ] }
+    { op = "options", value = [ "", "NATIONAL_ID", "PERSONAL_ID", "LOCAL_COUNCIL_CARD" ], message="not good" }
 ]
 
 document_id = [] # TBD
