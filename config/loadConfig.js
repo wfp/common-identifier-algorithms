@@ -2,6 +2,7 @@ const fs = require('node:fs');
 
 const validateConfig = require('./validateConfig');
 const loadSaltFile = require('./loadSaltFile');
+const generateConfigHash = require('./generateConfigHash');
 
 const {
     attemptToReadTOMLData
@@ -40,13 +41,27 @@ function loadConfig(configPath) {
     // validate the config
     const validationResult = validateConfig(configData);
 
-    // if the config is not valid return fa
+    // if the config is not valid return false
     if (validationResult) {
         return {
             success: false,
             error: validationResult,
         };
     }
+
+    // TODO: check sinature validity before salt injection
+    const configHash = generateConfigHash(configData);
+    console.log("CONFIG HASH:", configHash);
+
+    // fail if the signature is not OK
+    if (configHash !== configData.signature.config_signature) {
+        return {
+            success: false,
+            error: `Configuration file signature mismatch -- expected '${configData.signature.config_signature}' got '${configHash}' `,
+        }
+    }
+
+
 
     // check if we need to inject the salt data into the config
     // if not, the config loading is finished
@@ -57,6 +72,7 @@ function loadConfig(configPath) {
             config: configData,
         }
     }
+
 
     // figure out the file path and the validation regexp
     const saltFilePath = configData.algorithm.salt.value;
@@ -87,4 +103,4 @@ function loadConfig(configPath) {
     };
 }
 
-module.exports = loadConfig;
+module.exports = { loadConfig, CONFIG_FILE_ENCODING };

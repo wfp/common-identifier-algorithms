@@ -14,6 +14,7 @@
     "date-fns": "^3.6.0",
     "hi-base32": "^0.5.1",
     "phonetics": "^1.0.7",
+    "safe-stable-stringify": "^2.4.3",
     "soundex-code": "^2.0.1",
     "toml": "^3.0.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"

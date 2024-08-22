@@ -159,13 +159,28 @@ function validateConfig(config) {
 
     }
 
+
+    function checkSignature(signature) {
+        return isObject("signature", signature) ||
+            isString("signature.config_signature", signature.config_signature);
+    }
+
+    function checkMessages(messages) {
+        return isObject("messages", messages) ||
+            isString("messages.error_in_config", messages.error_in_config) ||
+            isString("messages.error_in_salt", messages.error_in_salt);
+
+    }
+
     return checkMeta(config.meta) ||
         checkSource(config.source) ||
         checkValidations(config.validations) ||
         checkAlgorithm(config.algorithm) ||
         checkDestination("destination", config.destination) ||
         checkDestination("destination_map", config.destination_map) ||
-        checkDestination("destination_errors", config.destination_errors)
+        checkDestination("destination_errors", config.destination_errors) ||
+        checkSignature(config.signature) ||
+        checkMessages(config.messages)
         ;
 }
 

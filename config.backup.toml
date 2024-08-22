@@ -14,6 +14,20 @@ terms_and_conditions="""
 
 """
 
+[messages]
+
+error_in_config="""
+<p>The application encountered an error while attempting to load a configuration file.</p>
+
+<p>Please contanct WFP support at <a href="mailto:some.email@wfp.org">some.email@wfp.org</a></p>
+"""
+
+error_in_salt="""
+<p>The application encountered an error while attempting to load your individual salt file.</p>
+
+<p>Please contanct WFP support at <a href="mailto:some.email@wfp.org">some.email@wfp.org</a></p>
+"""
+
 [source]
 columns = [
     { name = "Individual Reference", alias = "individual_reference" },
@@ -194,4 +208,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="a7363481"
+config_signature="044eaa1d24b81b4ff53de253751d0558"

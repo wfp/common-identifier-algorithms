@@ -2,8 +2,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 
 
-const loadConfig = require('./loadConfig');
-const { CONFIG_FILE_ENCODING }= require('./loadConfig')
+const { loadConfig, CONFIG_FILE_ENCODING }= require('./loadConfig')
 
 
 // Returns the prefered Application Data storage location based on the operating system
