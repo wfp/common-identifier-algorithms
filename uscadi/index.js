@@ -1,14 +1,14 @@
 const crypto = require('node:crypto');
-const loadSaltFile = require('./config/loadSaltFile');
+const loadSaltFile = require('../config/loadSaltFile');
 
 // USCADI uses RFC4648 base32 -- NodeJs has no default implementation for that
 const base32 = require('hi-base32');
 
-const transliterateWord = require('./uscadi/transliteration');
-const ar2SafeBwMap = require('./uscadi/transliteration-mapping-ar2safebw');
+const transliterateWord = require('./transliteration');
+const ar2SafeBwMap = require('./transliteration-mapping-ar2safebw');
 
-const makeArabicSoundexEngine = require('./uscadi/arabic-soundex');
-const doubleMetaphone = require('./uscadi/double-metaphone');
+const makeArabicSoundexEngine = require('./arabic-soundex');
+const doubleMetaphone = require('./double-metaphone');
 
 
 // the soundex engine we'll use

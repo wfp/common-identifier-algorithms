@@ -179,12 +179,6 @@ function baseFileName(filePath) {
 
 async function preprocessFile(config, inputFilePath, limit) {
     console.log("------------ preprocessFile -----------------")
-    // let {makeUscadiHasher} = require('./uscadi');
-    // const {decoderForFile, fileTypeOf} = require('./decoding');
-
-    // Load the config
-    // let config = Config.getConfig();
-
 
     // the input file path
     // let inputFilePath = program.args[0];

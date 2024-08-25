@@ -39,9 +39,11 @@ class XlsxEncoder extends EncoderBase {
 
         let fileOutputPath = this._getOutputNameFor(this.basePath) + '.xlsx';
 
-        XLSX.writeFile(this.workbook, fileOutputPath, { compression: true });
+        this._withTemporaryFile(fileOutputPath, (temporaryFilePath) => {
+            XLSX.writeFile(this.workbook, temporaryFilePath, { compression: true });
 
-        console.log("[XLSX] Written ", fileOutputPath);
+            console.log("[XLSX] Written ", temporaryFilePath);
+        })
 
         // add the current file to the list of outputs
         this.outputPaths.push(fileOutputPath);

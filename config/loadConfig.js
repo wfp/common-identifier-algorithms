@@ -87,7 +87,10 @@ function loadConfig(configPath) {
         return {
             success: false,
             isSaltFileError: true,
-            error: `Invalid salt file: '${saltFilePath}'`
+            error: `Invalid salt file: '${saltFilePath}'`,
+            // send the existing config alongside so if this config is the backup one, error messages
+            // can still be loaded
+            config: configData,
         };
     }
 

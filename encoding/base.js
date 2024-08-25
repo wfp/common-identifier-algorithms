@@ -1,3 +1,6 @@
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 const { lightFormat } = require("date-fns");
 
 // Name formatting via Date-Fns lightformat.
@@ -7,6 +10,29 @@ function formatName(name, date) {
         let formatString = match.slice(2, -2);
         return lightFormat(date, formatString);
     })
+}
+
+// Moves a file (uses fs.rename and falls back to fs.copyFile between FS bounds)
+function moveFile(oldPath, newPath) {
+    // Create the output directory
+    fs.mkdirSync(path.dirname(newPath), { recursive: true });
+
+    try {
+        // Attempt to rename the file
+        fs.renameSync(oldPath, newPath);
+    } catch (err) {
+        // error may indicate that the paths are on different file systems
+        // so check for that and copy as a fallback
+        if (err.code === 'EXDEV') {
+            // Copy the file
+            fs.copyFileSync(oldPath, newPath);
+            // Delete the old file
+            fs.unlinkSync(oldPath);
+        } else {
+            // re-throw the error
+            throw err;
+        }
+    }
 }
 
 class EncoderBase {
@@ -84,6 +110,18 @@ class EncoderBase {
         })
     }
 
+    _withTemporaryFile(outputPath, pred) {
+
+        const temporaryFilePath = path.join(os.tmpdir(), path.basename(outputPath));
+
+        // call the predicate with the temporary file path so it can write the output
+        pred(temporaryFilePath);
+
+        // move to the final output location
+        moveFile(temporaryFilePath, outputPath);
+        console.log("[ENCODING] Moved output to final location:", outputPath);
+
+    }
 
 }
 

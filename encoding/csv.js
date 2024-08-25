@@ -1,7 +1,12 @@
-const { stringify } = require('csv-stringify/sync');
+const os = require('node:os');
+const path = require('node:path');
 const fs = require('node:fs');
 
+const { stringify } = require('csv-stringify/sync');
+
 const EncoderBase = require('./base');
+
+
 
 class CsvEncoder extends EncoderBase {
     constructor(mapping, options) {
@@ -55,13 +60,32 @@ class CsvEncoder extends EncoderBase {
         // console.log(fullData);
         let generated = stringify(fullData, {});
 
-        // write to the disk
-        fs.writeFileSync(outputPath, generated, 'utf-8');
+        // write the file to a temporary location
+        // --------------------------------------
+
+        // const temporaryFilePath = path.join(os.tmpdir(), path.basename(outputPath));
+
+        // write to a temporary location then move the file
+        this._withTemporaryFile(outputPath, (temporaryFilePath) => {
+            // write to the disk
+            // fs.writeFileSync(outputPath, generated, 'utf-8');
+            fs.writeFileSync(temporaryFilePath, generated, 'utf-8');
+            console.log("[CSV] Saved output to temporary location:", temporaryFilePath);
+        });
+
+        // // write to the disk
+        // // fs.writeFileSync(outputPath, generated, 'utf-8');
+        // fs.writeFileSync(temporaryFilePath, generated, 'utf-8');
+        // console.log("[ENCODING] Saved output to temporary location:", temporaryFilePath);
+
+        // // move to the output location
+        // moveFile(temporaryFilePath, outputPath);
+        // console.log("[ENCODING] Moved output to final location:", outputPath);
 
         // add the current file to the list of outputs
         this.outputPaths.push(outputPath);
 
-        console.log("[CSV] Written", outputPath);
+        // console.log("[CSV] Written", outputPath);
     }
 
 }

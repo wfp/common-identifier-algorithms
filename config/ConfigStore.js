@@ -28,7 +28,8 @@ const BACKUP_CONFIG_FILE_PATH = path.join(__dirname, "..", "config.backup.toml")
 function ensureAppDirectoryExists(appDir=APP_DIR_PATH) {
     if (!fs.existsSync(appDir)) {
         console.log("Application directory '", appDir, "' does not exits -- creating it");
-        fs.mkdirSync(appDir)
+        // TODO: is doing this recursively worth it (the app dir should always be 1 level bellow a system directory)
+        fs.mkdirSync(appDir /*, { recursive: true } */);
     }
 }
 
@@ -94,9 +95,19 @@ class ConfigStore {
         // save the error
         this.loadError = backupConfigLoad.error;
 
-        console.log("[CONFIG] Backup config load failed - the application should alert the user")
         // if the backup config fails to load we are screwed
-        this.noValidConfig();
+        console.log("[CONFIG] Backup config load failed - the application should alert the user")
+
+        // if there is a salt file error store the config, but act like it's invalid
+        // (this is needed to pick up error messages from the config file)
+        if (backupConfigLoad.isSaltFileError) {
+            this.data = backupConfigLoad.config;
+            this.hasConfigLoaded = false;
+            this.isValid = false;
+        } else {
+            this.noValidConfig();
+        }
+
     }
 
     // Attempts to update the contents of the current configuration file in
