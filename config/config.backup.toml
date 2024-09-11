@@ -5,6 +5,8 @@ region="NWS"
 # The version of the configuration file
 version="1.0.8"
 
+[messages]
+
 # HTML to display as Terms And Conditions
 terms_and_conditions="""
 <p>Lorem ipsum <a href="https://wfp.org" target="_blank">dolor</a> sit amet, <b>consectetur adipiscing</b> elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
@@ -32,8 +34,6 @@ terms_and_conditions="""
 <p><i>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu</i> fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
 """
-
-[messages]
 
 error_in_config="""
 
@@ -183,7 +183,7 @@ validator_regex = "-----BEGIN PGP PUBLIC KEY BLOCK-----[A-Za-z0-9+/=\\s]+-----EN
 
 [algorithm.salt.value]
 # $APPDATA can be used to substitute the application data directory
-win32 = "./test_files/public_system.asc"
+win32 = "$APPDATA/CommonIDTool/public_system.asc"
 # $HOME can be used to substitute the users home directory
 darwin = "$APPDATA/CommonIDTool/public_system.asc"
 
@@ -191,7 +191,6 @@ darwin = "$APPDATA/CommonIDTool/public_system.asc"
 [destination]
 columns = [
     { name = "USCADI", alias = "USCADI" },
-    { name = "USCADI Source", alias = "USCADI_src" },
     { name = "Organization", alias = "organization" },
     { name = "Category", alias = "category" },
     { name = "Currency", alias = "currency" },
@@ -236,4 +235,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="3b685b5ae2554c95ec5b0b3d60295a0f"
+config_signature="8069fe484c54dcb17206b1f98a3a9c30"
