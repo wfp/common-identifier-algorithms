@@ -71,34 +71,39 @@ columns = [
 
 "*" = [
     { op = "max_field_length", value = 200 },
-    { op = "field_type", value = "str" },
 ]
 
 # biographic columns
 individual_reference = [
+    { op = "field_type", value = "str" },
     { op = "regex_match", value = '(\d{8,14})', message="is not a number with 8-14 digits" } # TBD
 ]
 
 first_name = [
+    { op = "field_type", value = "str" },
     # Example message for a language check if needed
     { op = "language_check", value = "Arabic", message="is not Arabic"}
 ]
 
 last_name = [
+    { op = "field_type", value = "str" },
     # The default error message for the 'lanaguage_check' is "languge is not <LANGUAGE>"
     # so the default error messages should be enough
     { op = "language_check", value = "Arabic"}
 ]
 
 father_first_name = [
+    { op = "field_type", value = "str" },
     { op = "language_check", value = "Arabic"}
 ]
 
 father_last_name = [
+    { op = "field_type", value = "str" },
     { op = "language_check", value = "Arabic"}
 ]
 
 mother_first_name = [
+    { op = "field_type", value = "str" },
     { op = "language_check", value = "Arabic"}
 ]
 
@@ -110,6 +115,7 @@ dob_year = [
 ]
 
 document_type = [
+    { op = "field_type", value = "str" },
     # default
     { op = "options", value = [ "", "NATIONAL_ID", "PERSONAL_ID", "LOCAL_COUNCIL_CARD" ], message="not good" }
 ]
@@ -118,6 +124,7 @@ document_id = [] # TBD
 
 # assistance columns
 organization = [
+    { op = "field_type", value = "str" },
     { op = "regex_match", value = 'ORG1', message="is not 'ORG1'" },
 ]
 
@@ -127,6 +134,7 @@ category = [
 ]
 
 currency = [
+    { op = "field_type", value = "str" },
     { op = "regex_match", value = 'USD', message="must be 'USD'" }
 ]
 
@@ -235,4 +243,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="8069fe484c54dcb17206b1f98a3a9c30"
+config_signature="a16c368228a0be9ff809aca6a78733f1"
