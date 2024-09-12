@@ -63,25 +63,28 @@ columns = [
 
 "*" = [
     { op = "max_field_length", value = 200 },
-    { op = "field_type", value = "str" },
 ]
 
 # biographic columns
 national_id = [
+    { op = "field_type", value = "str" },
     { op = "regex_match", value = '(\d{11})' }
 ]
 
 # assistance columns
 organization = [
+    { op = "field_type", value = "str" },
     { op = "regex_match", value = 'ORG1' },
 ]
 
 category = [
+    { op = "field_type", value = "str" },
     { op = "regex_match", value = '(\S{6,12})' },
     { op = "options", value = [ "CASH-MPA", "CASH-RENT" ] }
 ]
 
 currency = [
+    { op = "field_type", value = "str" },
     { op = "regex_match", value = 'USD' }
 ]
 
@@ -102,6 +105,17 @@ end = [
     { op = "date_diff", value = "-12M"},
     { op = "date_field_diff", target = "start", value="-12M"},
 ]
+
+[column_validations]
+
+currency = [
+    { op = "field_values_equal" },
+]
+
+organization = [
+    { op = "field_values_equal" },
+]
+
 
 
 [algorithm]
@@ -179,4 +193,4 @@ postfix = "-ERRORS-GOS-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="d0f45645cdc5f6bb8af3d7c10b1e8643"
+config_signature="74fa70ab05bfed0cc54133368c57e99e"
