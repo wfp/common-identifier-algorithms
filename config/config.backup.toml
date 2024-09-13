@@ -74,7 +74,8 @@ national_id = [
 # assistance columns
 organization = [
     { op = "field_type", value = "str" },
-    { op = "regex_match", value = 'ORG1' },
+    { op = "same_value_for_all_rows" },
+    # { op = "regex_match", value = 'ORG1' },
 ]
 
 category = [
@@ -85,7 +86,8 @@ category = [
 
 currency = [
     { op = "field_type", value = "str" },
-    { op = "regex_match", value = 'USD' }
+    { op = "same_value_for_all_rows" },
+    # { op = "regex_match", value = 'USD' }
 ]
 
 amount = [
@@ -193,4 +195,4 @@ postfix = "-ERRORS-GOS-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="74fa70ab05bfed0cc54133368c57e99e"
+config_signature="14fa6ba498eeb3ca073c442b7e095581"
