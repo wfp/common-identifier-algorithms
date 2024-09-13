@@ -125,7 +125,8 @@ document_id = [] # TBD
 # assistance columns
 organization = [
     { op = "field_type", value = "str" },
-    { op = "regex_match", value = 'ORG1', message="is not 'ORG1'" },
+    { op = "same_value_for_all_rows" },
+    # { op = "regex_match", value = 'ORG1', message="is not 'ORG1'" },
 ]
 
 category = [
@@ -135,7 +136,8 @@ category = [
 
 currency = [
     { op = "field_type", value = "str" },
-    { op = "regex_match", value = 'USD', message="must be 'USD'" }
+    { op = "same_value_for_all_rows" },
+    # { op = "regex_match", value = 'USD', message="must be 'USD'" }
 ]
 
 amount = [
@@ -243,4 +245,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="a16c368228a0be9ff809aca6a78733f1"
+config_signature="24be94119af20cf9bf4ab4433408d6f3"
