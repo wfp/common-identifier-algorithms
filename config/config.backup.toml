@@ -3,7 +3,7 @@
 region="NWS"
 
 # The version of the configuration file
-version="1.0.8"
+version="0.1.0"
 
 [messages]
 
@@ -76,7 +76,8 @@ columns = [
 # biographic columns
 individual_reference = [
     { op = "field_type", value = "str" },
-    { op = "regex_match", value = '(\d{8,14})', message="is not a number with 8-14 digits" } # TBD
+    { op = "regex_match", value = "[a-zA-Z0-9!\"#$%&'()*+\\-./:;?@[\\]^_{|}~]+", message="must only consist of alphanumeric characters and supported special characters" }, # TBD
+    { op = "regex_match", value = '(\d{8,14})', message="is not a number with 8-14 digits" }, # TBD
 ]
 
 first_name = [
@@ -117,7 +118,7 @@ dob_year = [
 document_type = [
     { op = "field_type", value = "str" },
     # default
-    { op = "options", value = [ "", "NATIONAL_ID", "PERSONAL_ID", "LOCAL_COUNCIL_CARD" ], message="not good" }
+    { op = "options", value = [ "", "NATIONAL_ID", "PERSONAL_ID", "LOCAL_COUNCIL_CARD" ] }
 ]
 
 document_id = [] # TBD
@@ -125,37 +126,39 @@ document_id = [] # TBD
 # assistance columns
 organization = [
     { op = "field_type", value = "str" },
+    { op = "min_field_length", value = 3 },
+    { op = "max_field_length", value = 8 },
     { op = "same_value_for_all_rows" },
-    # { op = "regex_match", value = 'ORG1', message="is not 'ORG1'" },
 ]
 
 category = [
-    { op = "regex_match", value = '(\S{6,12})', message="does not look like a category name" },
+    { op = "field_type", value = "str" },
+    { op = "same_value_for_all_rows" },
     { op = "options", value = [ "CASH-MPA", "CASH-RENT" ] }
 ]
 
 currency = [
     { op = "field_type", value = "str" },
     { op = "same_value_for_all_rows" },
-    # { op = "regex_match", value = 'USD', message="must be 'USD'" }
+    { op = "regex_match", value = 'USD', message="must be USD" },
 ]
 
 amount = [
-    { op = "min_value", value = 1000 },
-    { op = "max_value", value = 100000 },
+    { op = "min_value", value = 1 },
+    { op = "max_value", value = 1000 },
 ]
 
 start = [
-    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="is in the wrong date format" }, # yyyyMMdd
+    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd, e.g. 20240301" }, # yyyyMMdd
     { op = "date_diff", value = "+3M"},
     { op = "date_diff", value = "-12M"}
 ]
 
 end = [
-    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="is in the wrong date format"  }, # yyyyMMdd
+    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd, e.g. 20240301" }, # yyyyMMdd
     { op = "date_diff", value = "+3M"},
     { op = "date_diff", value = "-12M"},
-    { op = "date_field_diff", target = "start", value="-12M"},
+    { op = "date_field_diff", target = "start", value="-12M", message="must be within a year of Start"},
 ]
 
 
@@ -245,4 +248,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="24be94119af20cf9bf4ab4433408d6f3"
+config_signature="a5c689d25b3523ca35a2944a207044e6"
