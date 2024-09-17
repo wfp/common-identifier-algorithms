@@ -3,7 +3,7 @@
 region="GOS"
 
 # The version of the configuration file
-version="0.0.9"
+version="0.1.0"
 
 [messages]
 
@@ -68,57 +68,47 @@ columns = [
 # biographic columns
 national_id = [
     { op = "field_type", value = "str" },
-    { op = "regex_match", value = '(\d{11})' }
+    { op = "regex_match", value = '(\d{11})', message="must be 11 numeric digits" }
 ]
 
 # assistance columns
 organization = [
     { op = "field_type", value = "str" },
+    { op = "min_field_length", value = 3 },
+    { op = "max_field_length", value = 8 },
     { op = "same_value_for_all_rows" },
     # { op = "regex_match", value = 'ORG1' },
 ]
 
 category = [
     { op = "field_type", value = "str" },
-    { op = "regex_match", value = '(\S{6,12})' },
+    { op = "same_value_for_all_rows" },
     { op = "options", value = [ "CASH-MPA", "CASH-RENT" ] }
 ]
 
 currency = [
     { op = "field_type", value = "str" },
     { op = "same_value_for_all_rows" },
-    # { op = "regex_match", value = 'USD' }
+    { op = "regex_match", value = 'SYP', message="must be SYP (Syrian Pounds)" }
 ]
 
 amount = [
     { op = "min_value", value = 1 },
-    { op = "max_value", value = 1000 },
+    { op = "max_value", value = 20000000 },
 ]
 
 start = [
-    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))' }, # yyyyMMdd
+    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd, e.g. 20240301" }, # yyyyMMdd
     { op = "date_diff", value = "+3M"},
     { op = "date_diff", value = "-12M"}
 ]
 
 end = [
-    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))' }, # yyyyMMdd
+    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd, e.g. 20240301"  }, # yyyyMMdd
     { op = "date_diff", value = "+3M"},
     { op = "date_diff", value = "-12M"},
-    { op = "date_field_diff", target = "start", value="-12M"},
+    { op = "date_field_diff", target = "start", value="-12M", message="must be within a year of Start"},
 ]
-
-[column_validations]
-
-currency = [
-    { op = "field_values_equal" },
-]
-
-organization = [
-    { op = "field_values_equal" },
-]
-
-
 
 [algorithm]
 
@@ -195,4 +185,4 @@ postfix = "-ERRORS-GOS-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="14fa6ba498eeb3ca073c442b7e095581"
+config_signature="bc5c3ea2f3f58b665d9e457d69281c56"
