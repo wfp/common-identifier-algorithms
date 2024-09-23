@@ -50,7 +50,6 @@ function generateHash(hasher, extractedObj, collectorFn) {
         return '';
     }
     // if there is data generate a hash
-    // return collectorFn(uscadi, extractedObj);
     return hasher.generateHash(collectedData);
 }
 
