@@ -1,3 +1,48 @@
+// This code is ported from the the Python implementation of the Double Metaphone algorithm
+// avaialble at https://github.com/oubiwann/metaphone under the BSD-3-Clause license.
+// ------
+//
+// Original Description
+// --------------------
+//
+// This is a copy of the Python Double Metaphone algorithm, taken from Andrew
+// Collins' work, a Python implementation of an algorithm in C originally
+// created by Lawrence Philips. Since then, improvements have been made by
+// several contributors, viewable in the git history.
+//
+// Original License:
+// --------
+// Copyright (c) 2007 Andrew Collins, Chris Leong
+// Copyright (c) 2009 Matthew Somerville
+// Copyright (c) 2010 Maximillian Dornseif, Richard Barran
+// Copyright (c) 2012 Duncan McGreggor
+// All rights reserved.
+
+//  * Redistribution and use in source and binary forms, with or without
+//    modification, are permitted provided that the following conditions are met:
+
+//  * Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
+
+//  * Redistributions in binary form must reproduce the above copyright notice,
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+
+// Neither the name "Metaphone" nor the names of its contributors may be used to
+// endorse or promote products derived from this software without specific prior
+// written permission.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 const VOWELS = ['A', 'E', 'I', 'O', 'U', 'Y'];
 const SILENT_STARTERS = ["GN", "KN", "PN", "WR", "PS"];
 
