@@ -582,7 +582,6 @@ function doubleMetaphone(input) {
 
 module.exports = doubleMetaphone;
 
-// TODO: check the algorithm output here against WFP python version
 function test() {
 
     // cleans a single value in a name column (whitespace and other)

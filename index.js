@@ -115,7 +115,6 @@ function generateHash(hasher, extractedObj, collectorFn) {
         return '';
     }
     // if there is data generate a hash
-    // return collectorFn(uscadi, extractedObj);
     return hasher.generateHash(collectedData);
 }
 
@@ -125,11 +124,9 @@ function generateHash(hasher, extractedObj, collectorFn) {
 
 
 function makeUscadiHasher(config) {
-    // TODO: config check
     switch (config.hash.strategy.toLowerCase()) {
         case 'sha256':
             return new UscadiHasher(config);
-            // return new Sha256Hasher(config);
         default:
             throw new Error(`Unknown hash strategy in config: '${config.hash.strategy}'`);
     }
