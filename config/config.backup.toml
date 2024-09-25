@@ -37,15 +37,15 @@ terms_and_conditions="""
 
 error_in_config="""
 
-<p>The application encountered an error while attempting to load a configuration file.</p>
+<p>The application encountered an error whilst attempting to load a configuration file.</p>
 
-<p>Please contanct WFP support at <a href="mailto:some.email@wfp.org">some.email@wfp.org</a></p>
+<p>Please contact WFP support at <a href="mailto:NWS.BuildingBlocks@wfp.org">NWS.BuildingBlocks@wfp.org</a></p>
 """
 
 error_in_salt="""
-<p>The application encountered an error while attempting to load your individual salt file.</p>
+<p>The application encountered an error whilst attempting to load your individual salt file.</p>
 
-<p>Please contanct WFP support at <a href="mailto:some.email@wfp.org">some.email@wfp.org</a></p>
+<p>Please contact WFP support at <a href="mailto:NWS.BuildingBlocks@wfp.org">NWS.BuildingBlocks@wfp.org</a></p>
 """
 
 [source]
@@ -76,8 +76,7 @@ columns = [
 # biographic columns
 individual_reference = [
     { op = "field_type", value = "str" },
-    { op = "regex_match", value = "[a-zA-Z0-9!\"#$%&'()*+\\-./:;?@[\\]^_{|}~]+", message="must only consist of alphanumeric characters and supported special characters" }, # TBD
-    { op = "regex_match", value = '(\d{8,14})', message="is not a number with 8-14 digits" }, # TBD
+    { op = "regex_match", value = "[a-zA-Z0-9!\"#$%&'()*+\\-./:;?@[\\]^_{|}~]+", message="must only consist of alphanumeric characters and supported special characters" } # TBD
 ]
 
 first_name = [
@@ -145,7 +144,7 @@ currency = [
 
 amount = [
     { op = "min_value", value = 1 },
-    { op = "max_value", value = 1000 },
+    { op = "max_value", value = 1000000 },
 ]
 
 start = [
@@ -203,14 +202,14 @@ darwin = "$APPDATA/CommonIDTool/public_system.asc"
 
 [destination]
 columns = [
-    { name = "USCADI", alias = "USCADI" },
+    { name = "Common Identifier", alias = "USCADI" },
     { name = "Organization", alias = "organization" },
     { name = "Category", alias = "category" },
     { name = "Currency", alias = "currency" },
     { name = "Amount", alias = "amount" },
     { name = "Start (yyyyMMdd)", alias = "start" },
     { name = "End (yyyyMMdd)", alias = "end" },
-    { name = "Document Hash", alias = "document_hash" },
+    { name = "Reference Identifier", alias = "document_hash" },
 ]
 # The postfix of the output file. Anything inside double curly braces
 # will be treated as a date format string.
@@ -220,8 +219,8 @@ postfix = "-OUTPUT-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 [destination_map]
 columns = [
     { name = "Individual Reference", alias = "individual_reference" },
-    { name = "USCADI", alias = "USCADI" },
-    { name = "Document Hash", alias = "document_hash" },
+    { name = "Common Identifier", alias = "USCADI" },
+    { name = "Reference Identifier", alias = "document_hash" },
 ]
 postfix = "-MAPPING-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
@@ -248,4 +247,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="a5c689d25b3523ca35a2944a207044e6"
+config_signature="6ad54aec6cc12277d74fa8d46bb7c146"
