@@ -57,8 +57,9 @@ columns = [
     { name = "Father Last Name", alias = "father_last_name" },
     { name = "Mother First Name", alias = "mother_first_name" },
     { name = "Year of Birth", alias = "dob_year" },
-    { name = "Document Type", alias = "document_type" },
-    { name = "Document ID", alias = "document_id" },
+    # By specifying the default when the column is missing the default value will be added
+    { name = "Document Type", alias = "document_type", default="" },
+    { name = "Document ID", alias = "document_id", default="" },
     { name = "Organization", alias = "organization" },
     { name = "Category", alias = "category" },
     { name = "Currency", alias = "currency" },
@@ -247,4 +248,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="6ad54aec6cc12277d74fa8d46bb7c146"
+config_signature="ad1fa424ffd9451adc863a1ac75ff1ad"
