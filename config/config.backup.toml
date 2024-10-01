@@ -9,43 +9,47 @@ version="0.1.0"
 
 # HTML to display as Terms And Conditions
 terms_and_conditions="""
-<p>Lorem ipsum <a href="https://wfp.org" target="_blank">dolor</a> sit amet, <b>consectetur adipiscing</b> elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
-
-<p><i>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu</i> fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-<p>Lorem ipsum <a href="https://wfp.org" target="_blank">dolor</a> sit amet, <b>consectetur adipiscing</b> elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
-
-<p><i>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu</i> fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-<p>Lorem ipsum <a href="https://wfp.org" target="_blank">dolor</a> sit amet, <b>consectetur adipiscing</b> elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
-
-<p><i>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu</i> fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-<p>Lorem ipsum <a href="https://wfp.org" target="_blank">dolor</a> sit amet, <b>consectetur adipiscing</b> elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
-
-<p><i>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu</i> fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-<p>Lorem ipsum <a href="https://wfp.org" target="_blank">dolor</a> sit amet, <b>consectetur adipiscing</b> elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
-
-<p><i>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu</i> fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-<p>Lorem ipsum <a href="https://wfp.org" target="_blank">dolor</a> sit amet, <b>consectetur adipiscing</b> elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
-
-<p><i>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu</i> fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
+<strong>Common Identifier Application</strong>
+<p>
+    <i>Copyright (C) 2024 World Food Programme</i>
+</p>
+<p>
+    This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+    License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any
+    later version.
+</p>
+<p>
+    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+</p>
+<p>
+    You should have received a copy of the GNU General Public License along with this program. If not, see <a href="https://www.gnu.org/licenses" target="_blank">gnu.org</a>.
+</p>
+<p>
+    World Food Programme (WFP) disclaims any responsibility for how the program is used. Users are solely
+    responsible for ensuring their use of the program complies with all applicable norms and regulations, including
+    those on data privacy and protection, and obtaining necessary consents and security measures where required.
+</p>
+<p>
+    Any dispute, controversy, or claim arising out of or relating to the use of the program, including the
+    interpretation, application, or breach of this license, unless settled amicably, shall be finally resolved by
+    arbitration pursuant to the UNCITRAL Arbitration Rules. Nothing in or relating to this license shall be deemed a
+    waiver, express or implied, of any of the privileges and immunities enjoyed by World Food Programme.
+</p>
 """
 
 error_in_config="""
 
-<p>The application encountered an error while attempting to load a configuration file.</p>
+<p>The application encountered an error whilst attempting to load a configuration file.</p>
 
-<p>Please contanct WFP support at <a href="mailto:some.email@wfp.org">some.email@wfp.org</a></p>
+<p>Please contact WFP support at <a href="mailto:Syria.BuildingBlocks@wfp.org">Syria.BuildingBlocks@wfp.org</a></p>
 """
 
 error_in_salt="""
-<p>The application encountered an error while attempting to load your individual salt file.</p>
+<p>The application encountered an error whilst attempting to load your individual salt file.</p>
 
-<p>Please contanct WFP support at <a href="mailto:some.email@wfp.org">some.email@wfp.org</a></p>
+<p>Please contact WFP support at <a href="mailto:Syria.BuildingBlocks@wfp.org">Syria.BuildingBlocks@wfp.org</a></p>
 """
 
 [source]
@@ -75,15 +79,16 @@ national_id = [
 organization = [
     { op = "field_type", value = "str" },
     { op = "min_field_length", value = 3 },
-    { op = "max_field_length", value = 8 },
+    { op = "max_field_length", value = 10 },
     { op = "same_value_for_all_rows" },
-    # { op = "regex_match", value = 'ORG1' },
 ]
 
 category = [
     { op = "field_type", value = "str" },
+    { op = "field_type", value = "str" },
+    { op = "min_field_length", value = 2 },
+    { op = "max_field_length", value = 15 },
     { op = "same_value_for_all_rows" },
-    { op = "options", value = [ "CASH-MPA", "CASH-RENT" ] }
 ]
 
 currency = [
@@ -94,7 +99,7 @@ currency = [
 
 amount = [
     { op = "min_value", value = 1 },
-    { op = "max_value", value = 20000000 },
+    { op = "max_value", value = 300000000 },
 ]
 
 start = [
@@ -105,28 +110,17 @@ start = [
 
 end = [
     { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd, e.g. 20240301"  }, # yyyyMMdd
-    { op = "date_diff", value = "+3M"},
-    { op = "date_diff", value = "-12M"},
     { op = "date_field_diff", target = "start", value="-12M", message="must be within a year of Start"},
 ]
 
 [algorithm]
 
 [algorithm.columns]
-to_translate = [
-    # "first_name",
-    # "last_name",
-    # "father_first_name",
-    # "father_last_name",
-    # "mother_first_name",
-]
+to_translate = []
 static = [
     "national_id",
 ]
-reference = [
-    # "document_type",
-    # "document_id"
-]
+reference = []
 
 [algorithm.hash]
 strategy = "SHA256" # SHA256 | SCRYPT | ARGON2
@@ -143,14 +137,14 @@ validator_regex = "-----BEGIN PGP PUBLIC KEY BLOCK-----[A-Za-z0-9+/=\\s]+-----EN
 
 [algorithm.salt.value]
 # $APPDATA can be used to substitute the application data directory
-win32 = "$APPDATA/CommonIDTool/public_system.asc"
+win32 = "$APPDATA/BuildingBlocks/public_system.asc"
 # $HOME can be used to substitute the users home directory
-darwin = "$APPDATA/CommonIDTool/public_system.asc"
+darwin = "$APPDATA/BuildingBlocks/public_system.asc"
 
 
 [destination]
 columns = [
-    { name = "Hashed ID", alias = "hashed_id" },
+    { name = "Common Identifier", alias = "hashed_id" },
     { name = "Organization", alias = "organization" },
     { name = "Category", alias = "category" },
     { name = "Currency", alias = "currency" },
@@ -166,7 +160,7 @@ postfix = "-OUTPUT-GOS-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
 [destination_map]
 columns = [
     { name = "National ID", alias = "national_id" },
-    { name = "Hashed ID", alias = "hashed_id" }
+    { name = "Common Identifier", alias = "hashed_id" }
 ]
 postfix = "-MAPPING-GOS-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
 
@@ -185,4 +179,4 @@ postfix = "-ERRORS-GOS-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="bc5c3ea2f3f58b665d9e457d69281c56"
+config_signature="63cea18c968de00e8c9cb9a478d4d935"
