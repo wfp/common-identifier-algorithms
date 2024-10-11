@@ -30,8 +30,15 @@ test("general metaphone processing", ()=> {
         ["PECCH",["PX","13"]], ["DGE",["J","3"]], ["DGU",["TK","2"]], ["DDT",["TT","21"]], ["FFOB",["FP","21"]],
         ["BUBBA",["PP","12"]], ["HIJJAB",["HJP","221"]], ["KKLAX",["KLK","21S"]],
         ["NNAMB",["NMP","211"]], ["QQADDEAR",["KTR","221"]], ["PHER",["FR","21"]], ["UVVE",["AF","12"]],
-        ["ZHO",["J","2"]], ["RIZZA",["RSS","1TS11"]], ["WHAT",["AT","11"]], ["EWAR",["AWR","111"]], ["AWHAT",["AFT","121"]]
+        ["ZHO",["J","2"]], ["RIZZA",["RSS","1TS11"]], ["WHAT",["AT","11"]], ["EWAR",["AWR","111"]], ["AWHAT",["AFT","121"]],
 
+
+        ["CHIA",["K","2"]], ["ACHAE",["AK","1X"]], ["CZOK",["SK","X1"]],
+
+        ["ACCIA",["AX","13"]], ["AGGRO",["AKR","121"]], ["GERRY",["KR","J2"]], ["ILLO",["AL","1 "]],
+        ["MUMBER",["MMPR","1111"]], ["FANGER",["FNJR","11K1"]], ["SHEIM",["SM","21"]],
+        ["SIO",["S","X"]], ["SIOW",["S ","3F"]], ["SCHUMAN",["XMN","311"]],
+        ["SCHMOCH",["SMK","K12"]], ["SCHOOER",["SKR","31"]], ["PAIS",["PS","1 "]],
     ];
 
 

@@ -1,5 +1,6 @@
 
 const { makeHasher, REGION } = require('./index')
+const makeArabicSoundexEngine = require('./arabic-soundex')
 
 const TEST_CONFIG ={
     salt: { source: "string", value: "TEST_HASH"},
@@ -46,3 +47,10 @@ test('hashing data should result in a hash and a source', () => {
 
 });
 
+
+test('ArabicSoundex fail branches', () => {
+    const a = makeArabicSoundexEngine()
+
+    expect(a.soundex("")).toEqual(undefined)
+    expect(a.soundex("X")).toEqual('00000')
+})
