@@ -1,0 +1,139 @@
+/*
+ * This file is part of Building Blocks CommonID Tool
+ * Copyright (c) 2024 WFP
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import { transliterateWord } from './engines/transliteration.js';
+import ar2SafeBwMap from './charmaps/transliteration-mapping-ar2safebw.js';
+
+import { makeArabicSoundexEngine } from './engines/arabic-soundex.js';
+import { doubleMetaphone } from './engines/double-metaphone.js';
+
+// the soundex engine we'll use
+let arabicSoundexEngine = makeArabicSoundexEngine();
+
+import { joinFieldsForHash, cleanValueList } from '../algo-shared/hashing/utils.js';
+import { BaseHasher, makeHasherFunction } from '../algo-shared/hashing/base.js';
+import { Config } from '../algo-shared/config/Config.js';
+import { Validation } from '../algo-shared/validation/Validation.js';
+
+export const REGION = "NWS";
+
+
+// USCADI implementation that takes the extracted ('static', 'to_translate', 'reference')
+// and returns a hashed object
+class UscadiHasher extends BaseHasher {
+
+    constructor(config: Config.Options["algorithm"]) {
+        super(config);
+    }
+
+    // Generates a transliteration, metaphone and soundex for a string
+    private translateValue = (value: string) => {
+        // clean the column value
+        let cleanedValue = this.cleanNameColumn(value);
+        // transliterate the value
+        const transliteratedStr = transliterateWord(cleanedValue, ar2SafeBwMap);
+        // package the output
+        return {
+            transliterated: transliteratedStr,
+            transliteratedMetaphone: doubleMetaphone(transliteratedStr)[0],
+            soundex: arabicSoundexEngine.soundex(cleanedValue)
+        }
+    }
+
+    // cleans a single value in a name column (whitespace and other)
+    private cleanNameColumn = (value: string) => {
+        // remove all whitespace and digits from all name fields
+        let cleaned = value.replaceAll(/[\s]+/g, "")
+            .replaceAll(/[\d]+/g, "")
+        // for names with Arabic letters, run the following regex replacements
+        // ة becomes ه
+        cleaned = cleaned.replaceAll("ة", "ه");
+        // any of: أ  ئ ؤ ء ى becomes ا
+        cleaned = cleaned.replaceAll(/أئؤءى/g, "ا");
+
+        return cleaned;
+    }
+
+    // Takes the output of `extractAlgoColumnsFromObject` (extracted properties) and
+    // return a string with the "static" and the translated "to_translate" parts
+    // concatednated as per the USCADI spec
+    private composeHashSource = (extractedObj: Config.AlgorithmColumns) => {
+        // the static fields stay the same
+        // while the to_translate fields are translated
+
+        let translatedValues = extractedObj.to_translate.map(this.translateValue);
+        let staticValues = extractedObj.static;
+
+        // The original USCADI algorithm seems to concatenate the translated values
+        // by grouping them by concatenating per-type:
+        // [_mp1_value, _mp2_value, ... , _sx1_value, _sx2_value, ...]
+        let {metaphone, soundex} = translatedValues.reduce((memo, val) => {
+            memo.metaphone.push(val.transliteratedMetaphone);
+            memo.soundex.push(val.soundex);
+
+            return memo;
+        }, { metaphone:[], soundex:[] } as { metaphone: string[], soundex: string[] })
+
+        // concat them
+        // TODO: check the order
+        let concatenated = joinFieldsForHash(cleanValueList(staticValues.concat(metaphone, soundex)));
+
+        return concatenated;
+    }
+
+    // Takes the output of `extractAlgoColumnsFromObject` (extracted properties) and
+    // return a string with the "refernce" parts concatednated as per the USCADI
+    // spec
+    private composeReferenceHashSource = (extractedObj: Validation.Data["row"]) => {
+        return joinFieldsForHash(cleanValueList(extractedObj.reference));
+    }
+
+    // Helper that generates a hash based on a concatenation result
+    private collectData = (extractedObj: Validation.Data["row"], collectorFn: CallableFunction): string => {
+        // collect the data for hashing
+        const collectedData = collectorFn(extractedObj);
+
+        // if there is an empty string only, return an empty string (no hash)
+        if (collectedData === '') {
+            return '';
+        }
+        // if there is data generate a hash
+        return collectedData;
+    }
+
+    // Builds the hash columns from the extracted row object
+    generateHashForExtractedObject(extractedObj: Config.AlgorithmColumns) {
+        const toBeHashed = this.collectData(extractedObj, this.composeHashSource);
+        const toBeHashedRef = this.collectData(extractedObj, this.composeReferenceHashSource);
+        return {
+            "USCADI": toBeHashed.length > 0 ? this.generateHash(toBeHashed) : "",
+            "document_hash": toBeHashedRef.length > 0 ? this.generateHash(toBeHashedRef): "",
+            
+            "USCADI_src": this.composeHashSource(extractedObj),
+            "document_hash_src": this.composeReferenceHashSource(extractedObj),
+        }
+    }
+}
+
+export const makeHasher: makeHasherFunction = (config: Config.Options["algorithm"]) => {
+    switch (config.hash.strategy.toLowerCase()) {
+        case 'sha256':
+            return new UscadiHasher(config);
+        default:
+            throw new Error(`Unknown hash strategy in config: '${config.hash.strategy}'`);
+    }
+}

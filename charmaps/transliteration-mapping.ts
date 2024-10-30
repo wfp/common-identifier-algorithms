@@ -15,13 +15,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { CharMap } from "./charmap.js";
+
 
 // Transliteration map (one to one mode) between each normalized Arabic letter
 // (no hamza and tah marbouta) represented in the id property and English letter
 // (capital letter) in the content of the item tag
 
 // This table is used for ArabicSoundex
-module.exports = {
+export default {
     "ا": "A",
     "ب": "B",
     "ت": "T",
@@ -50,4 +52,4 @@ module.exports = {
     "ه": "H",
     "و": "W",
     "ي": "Y",
-}
+} as CharMap

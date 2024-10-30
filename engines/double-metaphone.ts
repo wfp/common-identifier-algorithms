@@ -63,24 +63,27 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const VOWELS = ['A', 'E', 'I', 'O', 'U', 'Y'];
-const SILENT_STARTERS = ["GN", "KN", "PN", "WR", "PS"];
 
 class DoubleMetaphoneProcessor {
-    constructor(position) {
+    position: number;
+    primary_phone: string = "";
+    secondary_phone: string = "";
+    next: any;
+    constructor(position: number) {
         this.position = position;
         this.primary_phone = "";
         this.secondary_phone = "";
         this.next = [null, 1];
     }
 
-    processInitialVowels(word) {
+    processInitialVowels(word: string) {
         this.next = [null, 1];
         if (this.position === 0) {
             this.next = ['A', 1];
         }
     }
 
-    processB(word) {
+    processB(word: string) {
         if (word[this.position + 1] === 'B') {
             this.next = ['P', 2];
         } else {
@@ -88,7 +91,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processC(word) {
+    processC(word: string) {
         const buffer = word;
         const position = this.position;
         const start_index = 0;
@@ -152,7 +155,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processD(word) {
+    processD(word: string) {
         if (word.substring(this.position, this.position + 2) === 'DG') {
             if (['I', 'E', 'Y'].includes(word[this.position + 2])) {
                 this.next = ['J', 3];
@@ -166,7 +169,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processF(word) {
+    processF(word: string) {
         if (word[this.position + 1] === 'F') {
             this.next = ['F', 2];
         } else {
@@ -174,7 +177,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processG(word) {
+    processG(word: string) {
         const buffer = word;
         const position = this.position;
         const start_index = 0;
@@ -232,7 +235,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processH(word) {
+    processH(word: string) {
         if ((this.position === 0 || VOWELS.includes(word[this.position - 1])) && VOWELS.includes(word[this.position + 1])) {
             this.next = ['H', 2];
         } else {
@@ -240,7 +243,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processJ(word) {
+    processJ(word: string) {
         if (word.substring(this.position, this.position + 4) === 'JOSE' || word.substring(this.position, this.position + 4) === 'SAN ') {
             if ((this.position === 0 && word[this.position + 4] === ' ') || word.substring(0, 4) === 'SAN ') {
                 this.next = ['H', 1];
@@ -271,7 +274,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processK(word) {
+    processK(word: string) {
         if (word[this.position + 1] === 'K') {
             this.next = ['K', 2];
         } else {
@@ -279,7 +282,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processL(word) {
+    processL(word: string) {
         if (word[this.position + 1] === 'L') {
             if ((this.position === (word.length - 3) && word.substring(this.position - 1, this.position + 3) === 'ILLO') || ((word.substring(this.position - 1, this.position + 4) === 'ILLO') || (word.substring(this.position - 1, this.position + 4) === 'ILLA') || (word.substring(this.position - 1, this.position + 4) === 'ALLE'))) {
                 this.next = ['L', ' ', 2];
@@ -291,7 +294,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processM(word) {
+    processM(word: string) {
         // buffer = self.word.buffer
         // position = self.position
         // if ((buffer[position + 1:position + 4] == 'UMB'
@@ -316,7 +319,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processN(word) {
+    processN(word: string) {
         if (word[this.position + 1] === 'N') {
             this.next = ['N', 2];
         } else {
@@ -324,7 +327,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processP(word) {
+    processP(word: string) {
         if (word[this.position + 1] === 'H') {
             this.next = ['F', 2];
         } else if (['P', 'B'].includes(word[this.position + 1])) {
@@ -334,7 +337,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processQ(word) {
+    processQ(word: string) {
         if (word[this.position + 1] === 'Q') {
             this.next = ['K', 2];
         } else {
@@ -342,7 +345,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processR(word) {
+    processR(word: string) {
         if (this.position === (word.length - 1) && !this.isSlavoGermanic(word) && word.substring(this.position - 2, this.position) === 'IE' && !['ME', 'MA'].includes(word.substring(0, 2))) {
             this.next = ['R', ' ', 1];
         } else {
@@ -353,7 +356,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processS(word) {
+    processS(word: string) {
         const buffer = word;
         const position = this.position;
 
@@ -404,7 +407,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processT(word) {
+    processT(word: string) {
         const buffer = word;
         const position = this.position;
 
@@ -425,7 +428,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processV(word) {
+    processV(word: string) {
         if (word[this.position + 1] === 'V') {
             this.next = ['F', 2];
         } else {
@@ -433,7 +436,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processW(word) {
+    processW(word: string) {
         if (word[this.position + 1] === 'R') {
             this.next = ['R', 2];
         } else if (this.position === 0 && (VOWELS.includes(word[this.position + 1]) || word[this.position + 1] === 'H')) {
@@ -453,7 +456,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processX(word) {
+    processX(word: string) {
         if (this.position === 0) {
             this.next = ['S', 1];
         } else {
@@ -464,7 +467,7 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    processZ(word) {
+    processZ(word: string) {
         if (word[this.position + 1] === 'H') {
             this.next = ['J', 2];
         } else if (word.substring(this.position + 1, this.position + 3) === 'ZO' || word.substring(this.position + 1, this.position + 3) === 'ZI' || word.substring(this.position + 1, this.position + 3) === 'ZA' || this.isSlavoGermanic(word)) {
@@ -477,12 +480,12 @@ class DoubleMetaphoneProcessor {
         }
     }
 
-    isSlavoGermanic(word) {
+    isSlavoGermanic(word: string) {
         return (word.includes('W') || word.includes('K') || word.includes('CZ') || word.includes('WITZ'));
     }
 }
 
-function doubleMetaphone(input) {
+export function doubleMetaphone(input: string) {
     const length = input.length;
     const primary = [];
     const secondary = [];
@@ -588,39 +591,3 @@ function doubleMetaphone(input) {
 
     return [primary.join(''), secondary.join('')];
 }
-
-module.exports = doubleMetaphone;
-
-// function test() {
-
-//     // cleans a single value in a name column (whitespace and other)
-//     function cleanNameColumn(value) {
-//         // remove all whitespace and digits from all name fields
-//         let cleaned = value.replaceAll(/[\s]+/g, "")
-//             .replaceAll(/[\d]+/g, "")
-//         // for names with Arabic letters, run the following regex replacements
-//         // ة becomes ه
-//         cleaned = cleaned.replaceAll("ة", "ه");
-//         // any of: أ  ئ ؤ ء ى becomes ا
-//         cleaned = cleaned.replaceAll(/أئؤءى/g, "ا");
-
-//         return cleaned;
-//     }
-
-
-//     function convertWord(word) {
-//         let transliterated = transliterate(cleanNameColumn(word), ar2SafeBwMap);
-//         let mp = doubleMetaphone(transliterated);
-//         console.log("\t", word, "\t\t", transliterated, '\t\t', mp)
-//         return mp;
-//     }
-
-//     const transliterate = require('./transliteration');
-//     const ar2SafeBwMap = require('./transliteration-mapping-ar2safebw');
-
-//     ["هايل,عجرمة (العجارمة),رائد,صيداوي,اعتماد",
-//     "جدير,تميم,رائد,صيداوي,اعتماد"].forEach(row => row.split(",").forEach(convertWord))
-
-// }
-
-// test()

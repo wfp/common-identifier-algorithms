@@ -1,0 +1,1 @@
+export type CharMap = { [key: string]: string }

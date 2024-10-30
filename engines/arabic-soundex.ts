@@ -15,21 +15,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-const AsoundexMapping = require('./asoundex-mapping');
-const TransliterationMapping = require('./transliteration-mapping');
+import AsoundexMapping from '../charmaps/asoundex-mapping.js';
+import TransliterationMapping from '../charmaps/transliteration-mapping.js';
 
 const TARGET_LANGUAGE_ENGLISH = 'en';
 
-
-function mapSoundexCode(word) {
+function mapSoundexCode(word: string) {
     return Array.from(word).map((char) => {
         return AsoundexMapping[char] ||  '0'
     }).join('')
 }
 
 // Removes repeated characters from a word
-function trimRepeatedCharacters(word) {
+function trimRepeatedCharacters(word: string) {
     return Array.from(word).reduce((memo, char) => {
         // if the output is empty we always output the character
         if (memo.length == 0) {
@@ -46,7 +44,7 @@ function trimRepeatedCharacters(word) {
 
 
 // pads a string by adding a number of zeroes to reach a minimum length
-function rightPadWithZeroes(maxLength, str) {
+function rightPadWithZeroes(maxLength: number, str: string) {
     let remainingCount = maxLength - str.length;
 
     while (remainingCount > 0) {
@@ -58,18 +56,14 @@ function rightPadWithZeroes(maxLength, str) {
 }
 
 class ArabicSoundex {
+    targetLang: string = TARGET_LANGUAGE_ENGLISH;
+    targetLength: number = 5;
 
-    constructor() {
-        // is present in the original code
-        this.targetLang = TARGET_LANGUAGE_ENGLISH;
+    constructor() {}
 
-        // the original implementation targets an output length of 5
-        this.targetLength = 5;
-    }
-
-    soundex(word) {
+    soundex(word: string): string {
         // empty strings are empty
-        if (word === "") return;
+        if (word === "") return "";
 
         let soundex = word[0];
 
@@ -91,13 +85,6 @@ class ArabicSoundex {
 
 }
 
-// let A = new ArabicSoundex();
-// "هايل,عجرمة (العجارمة),رائد,صيداوي,اعتماد".split(",").forEach(word => {
-//     console.log("W:\t", word, "\t\t:", A.soundex(word))
-// })
-
-function makeArabicSoundexEngine() {
+export function makeArabicSoundexEngine() {
     return new ArabicSoundex()
 }
-
-module.exports = makeArabicSoundexEngine;

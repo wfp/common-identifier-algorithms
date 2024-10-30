@@ -16,15 +16,17 @@
  */
 
 
-const { makeHasher, REGION } = require('./index')
-const makeArabicSoundexEngine = require('./arabic-soundex')
+import { REGION, makeHasher } from "../index.js";
+import { makeArabicSoundexEngine } from "../engines/arabic-soundex.js";
+import { Config } from "../../algo-shared/config/Config.js";
 
-const TEST_CONFIG ={
-    salt: { source: "string", value: "TEST_HASH"},
-    hash: { strategy: "sha256" }
+const TEST_CONFIG: Config.Options["algorithm"] ={
+    salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+    hash: { strategy: "SHA256" },
+    columns: { to_translate: [], static: [], reference: [] }
 };
 
-function hasherWithConfig(cfg) {
+function hasherWithConfig(cfg: Config.Options["algorithm"]) {
     return () => { return makeHasher(cfg); }
 }
 
@@ -35,8 +37,9 @@ function getTestHasher(cfg=TEST_CONFIG) {
 
 
 test('creation with non-supported algorithms should fail', () => {
-    expect(hasherWithConfig({})).toThrow();
-    expect(hasherWithConfig({ hash: { strategy: "sha512" } })).toThrow();
+    const tmp = JSON.parse(JSON.stringify(TEST_CONFIG)) // deep copy
+    tmp.hash.strategy = "SCRYPT"
+    expect(hasherWithConfig(tmp)).toThrow();
 });
 
 
@@ -65,9 +68,29 @@ test('hashing data should result in a hash and a source', () => {
 });
 
 
+test('providing no reference should result in empty reference hash', () => {
+    const h = getTestHasher()
+
+    expect(h.generateHashForExtractedObject({
+        static: ["a", "b", "c"],
+        to_translate: [
+            "هايل", "عجرمة (العجارمة)",
+            "عبد الرّشيد", "السروري", "يعقوب", "الأشراف", "جمان",
+            "عبد الخالق", "بنو ياس", "جاد", "بنو الأحمر بن الحارث", "بنفسج",
+    ],
+        reference: [],
+    })).toEqual({
+        "USCADI": "K4SJ46VAVA4W6B3BZLWUYOPJVFRULRS5WWBPO3ALODDVFCBDGQSA====",
+        "USCADI_src": "abcHLAJRMPLJRMPAPTLRSTALSRRAKPALKRFJMNAPTLKLKPNSJTPNLMRPNLRFPNFSJH4000A2654A1346A4266Y2100A4261J2550A1342B1520J2300B1545B1512",
+        "document_hash": "",
+        "document_hash_src": "",
+    })
+
+});
+
 test('ArabicSoundex fail branches', () => {
     const a = makeArabicSoundexEngine()
 
-    expect(a.soundex("")).toEqual(undefined)
+    expect(a.soundex("")).toEqual("")
     expect(a.soundex("X")).toEqual('00000')
 })
