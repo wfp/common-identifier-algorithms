@@ -16,14 +16,16 @@
  */
 
 
-const { makeHasher, REGION } = require('./index')
+import { Config } from '../../algo-shared/config/Config.js';
+import { makeHasher, REGION } from '../index.js';
 
-const TEST_CONFIG ={
-    salt: { source: "string", value: "TEST_HASH"},
-    hash: { strategy: "sha256" }
+const TEST_CONFIG: Config.Options["algorithm"] ={
+    salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+    hash: { strategy: "SHA256" },
+    columns: { to_translate: [], static: [], reference: [] }
 };
 
-function hasherWithConfig(cfg) {
+function hasherWithConfig(cfg: Config.Options["algorithm"]) {
     return () => { return makeHasher(cfg); }
 }
 
@@ -34,8 +36,9 @@ function getTestHasher(cfg=TEST_CONFIG) {
 
 
 test('creation with non-supported algorithms should fail', () => {
-    expect(hasherWithConfig({})).toThrow();
-    expect(hasherWithConfig({ hash: { strategy: "sha512" } })).toThrow();
+    const tmp = JSON.parse(JSON.stringify(TEST_CONFIG)) // deep copy
+    tmp.hash.strategy = "SCRYPT"
+    expect(hasherWithConfig(tmp)).toThrow();
 });
 
 
