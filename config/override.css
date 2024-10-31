@@ -1,0 +1,12 @@
+/* ============================================================================
+    Any declarations in this file are appended to the renderer index.css during
+    the algorithm activation, use this to override any ui styles as required.
+    
+    For example, all theme colours are defined in the :root pseudoelement, the
+    following would override the two primary UI colours.
+    
+    :root {
+        --color-interactive-01: green;
+        --color-interactive-02: red;
+    }
+============================================================================ */
