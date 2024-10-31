@@ -47,12 +47,16 @@ test('creation with good config should succeed', () => {
 });
 
 test('hashing data should result in a hash and a source', () => {
-    const h = getTestHasher()
+    const config: Config.Options["algorithm"] ={
+        salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+        hash: { strategy: "SHA256" },
+        columns: { static: ["a", "b", "c" ], to_translate: [], reference: [] }
+    };
+    const h = getTestHasher(config)
 
     const data = { a: "A", b: "B", c: "C", d: "D" };
-    const colConfig = { static: ["a", "b", "c" ], to_translate: [], reference: [] };
 
-    expect(h.generateHashForObject(colConfig, data)).toEqual({
+    expect(h.generateHashForObject(data)).toEqual({
         hashed_id: "V6SLVUFRBKYAJOO3J2PHY33SAEKDPOWRQTUCJM6UKY6SFG3GRF5A====",
         hashed_id_src: "ABC",
     })

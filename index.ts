@@ -41,23 +41,10 @@ class GOSHasher extends BaseHasher {
         return concatenated;
     }
 
-    // Helper that generates a hash based on a concatenation result
-    private collectData = (extractedObj: Config.AlgorithmColumns, collectorFn: CallableFunction): string => {
-        // collect the data for hashing
-        const collectedData = collectorFn(extractedObj);
-
-        // if there is an empty string only, return an empty string (no hash)
-        if (collectedData === '') {
-            return '';
-        }
-        // if there is data generate a hash
-        return collectedData;
-    }
-
     // Builds the hash columns from the extracted row object
-    generateHashForObject(columnConfig: Config.AlgorithmColumns, obj: Validation.Data["row"]) {
-        const extractedObj = extractAlgoColumnsFromObject(columnConfig, obj);
-        const toBeHashed = this.collectData(extractedObj, this.composeHashSource);
+    generateHashForObject(obj: Validation.Data["row"]) {
+        const extractedObj = extractAlgoColumnsFromObject(this.config.columns, obj);
+        const toBeHashed = this.composeHashSource(extractedObj);
         return {
             hashed_id: toBeHashed.length > 0 ? this.generateHashForValue(toBeHashed) : "",
             hashed_id_src: this.composeHashSource(extractedObj),
