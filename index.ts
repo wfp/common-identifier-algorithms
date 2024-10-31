@@ -24,7 +24,7 @@ import { doubleMetaphone } from './engines/double-metaphone.js';
 // the soundex engine we'll use
 let arabicSoundexEngine = makeArabicSoundexEngine();
 
-import { joinFieldsForHash, cleanValueList } from '../algo-shared/hashing/utils.js';
+import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject } from '../algo-shared/hashing/utils.js';
 import { BaseHasher, makeHasherFunction } from '../algo-shared/hashing/base.js';
 import { Config } from '../algo-shared/config/Config.js';
 import { Validation } from '../algo-shared/validation/Validation.js';
@@ -115,13 +115,13 @@ class UscadiHasher extends BaseHasher {
         return collectedData;
     }
 
-    // Builds the hash columns from the extracted row object
-    generateHashForExtractedObject(extractedObj: Config.AlgorithmColumns) {
+    generateHashForObject(columnConfig: Config.AlgorithmColumns, obj: Validation.Data["row"]) {
+        const extractedObj = extractAlgoColumnsFromObject(columnConfig, obj);
         const toBeHashed = this.collectData(extractedObj, this.composeHashSource);
         const toBeHashedRef = this.collectData(extractedObj, this.composeReferenceHashSource);
         return {
-            "USCADI": toBeHashed.length > 0 ? this.generateHash(toBeHashed) : "",
-            "document_hash": toBeHashedRef.length > 0 ? this.generateHash(toBeHashedRef): "",
+            "USCADI": toBeHashed.length > 0 ? this.generateHashForValue(toBeHashed) : "",
+            "document_hash": toBeHashedRef.length > 0 ? this.generateHashForValue(toBeHashedRef): "",
             
             "USCADI_src": this.composeHashSource(extractedObj),
             "document_hash_src": this.composeReferenceHashSource(extractedObj),

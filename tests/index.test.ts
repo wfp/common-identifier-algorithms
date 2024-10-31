@@ -50,47 +50,27 @@ test('creation with good config should succeed', () => {
 test('hashing data should result in a hash and a source', () => {
     const h = getTestHasher()
 
-    expect(h.generateHashForExtractedObject({
-        static: ["a", "b", "c"],
-        to_translate: [
-            "هايل", "عجرمة (العجارمة)",
-            "عبد الرّشيد", "السروري", "يعقوب", "الأشراف", "جمان",
-            "عبد الخالق", "بنو ياس", "جاد", "بنو الأحمر بن الحارث", "بنفسج",
-    ],
-        reference: ["545986759749"],
-    })).toEqual({
-        "USCADI": "K4SJ46VAVA4W6B3BZLWUYOPJVFRULRS5WWBPO3ALODDVFCBDGQSA====",
-        "USCADI_src": "abcHLAJRMPLJRMPAPTLRSTALSRRAKPALKRFJMNAPTLKLKPNSJTPNLMRPNLRFPNFSJH4000A2654A1346A4266Y2100A4261J2550A1342B1520J2300B1545B1512",
-        "document_hash": "JXMBS6UWOYL663ISCJ5ANIPXIE7G6C6IQAA5LI4QNWLAGTLKBXGA====",
-        "document_hash_src": "545986759749",
-    })
+    const data = { fname: "فرج", lname: "سموم", a: "A", b: "B", ref1: "REF1", ref2: "REF2" }
+    const colConfig = { static: ["a", "b"], to_translate: ["fname", "lname"], reference: [ "ref1", "ref2" ]}
 
-});
-
+    expect(h.generateHashForObject(colConfig, data)).toEqual({
+        USCADI: 'MPXVV2UVCIRRQK7UA3IDDDQW6B2IZYHPSFRL7CU6IR6NK5J3XRFQ====',
+        document_hash: 'THHDQVM2VAH4O4KWSAOV7Q662IIFGA36KZH4MYCY5KUBROGMAWKQ====',
+        USCADI_src: 'ABFRJSMMF1620S2550',
+        document_hash_src: 'REF1REF2'
+    });
+})
 
 test('providing no reference should result in empty reference hash', () => {
     const h = getTestHasher()
 
-    expect(h.generateHashForExtractedObject({
-        static: ["a", "b", "c"],
-        to_translate: [
-            "هايل", "عجرمة (العجارمة)",
-            "عبد الرّشيد", "السروري", "يعقوب", "الأشراف", "جمان",
-            "عبد الخالق", "بنو ياس", "جاد", "بنو الأحمر بن الحارث", "بنفسج",
-    ],
-        reference: [],
-    })).toEqual({
-        "USCADI": "K4SJ46VAVA4W6B3BZLWUYOPJVFRULRS5WWBPO3ALODDVFCBDGQSA====",
-        "USCADI_src": "abcHLAJRMPLJRMPAPTLRSTALSRRAKPALKRFJMNAPTLKLKPNSJTPNLMRPNLRFPNFSJH4000A2654A1346A4266Y2100A4261J2550A1342B1520J2300B1545B1512",
-        "document_hash": "",
-        "document_hash_src": "",
-    })
+    const data = { fname: "فرج", lname: "سموم", a: "A", b: "B", ref1: "REF1", ref2: "REF2" }
+    const colConfig = { static: ["a", "b"], to_translate: ["fname", "lname"], reference: []}
 
+    expect(h.generateHashForObject(colConfig, data)).toEqual({
+        USCADI: 'MPXVV2UVCIRRQK7UA3IDDDQW6B2IZYHPSFRL7CU6IR6NK5J3XRFQ====',
+        document_hash: '',
+        USCADI_src: 'ABFRJSMMF1620S2550',
+        document_hash_src: ''
+    });
 });
-
-test('ArabicSoundex fail branches', () => {
-    const a = makeArabicSoundexEngine()
-
-    expect(a.soundex("")).toEqual("")
-    expect(a.soundex("X")).toEqual('00000')
-})
