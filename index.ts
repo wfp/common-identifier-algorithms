@@ -15,11 +15,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { joinFieldsForHash, cleanValueList } from '../algo-shared/hashing/utils.js';
+import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject } from '../algo-shared/hashing/utils.js';
 
 import { BaseHasher, makeHasherFunction } from '../algo-shared/hashing/base.js';
 import { Config } from '../algo-shared/config/Config.js';
-
+import { Validation } from '../algo-shared/validation/Validation.js';
 
 // USCADI implementation that takes the extracted ('static', 'to_translate', 'reference')
 // and returns a hashed object
@@ -55,28 +55,14 @@ class GOSHasher extends BaseHasher {
     }
 
     // Builds the hash columns from the extracted row object
-    generateHashForExtractedObject(extractedObj: Config.AlgorithmColumns) {
+    generateHashForObject(columnConfig: Config.AlgorithmColumns, obj: Validation.Data["row"]) {
+        const extractedObj = extractAlgoColumnsFromObject(columnConfig, obj);
         const toBeHashed = this.collectData(extractedObj, this.composeHashSource);
         return {
-            hashed_id: toBeHashed.length > 0 ? this.generateHash(toBeHashed) : "",
+            hashed_id: toBeHashed.length > 0 ? this.generateHashForValue(toBeHashed) : "",
             hashed_id_src: this.composeHashSource(extractedObj),
         }
     }
-
-
-}
-
-// Helper that generates a hash based on a concatenation result
-function generateHash(hasher: BaseHasher, extractedObj: Config.AlgorithmColumns, collectorFn: CallableFunction) {
-    // collect the data for hashing
-    const collectedData = collectorFn(extractedObj);
-
-    // if there is an empty string only, return an empty string (no hash)
-    if (collectedData === '') {
-        return '';
-    }
-    // if there is data generate a hash
-    return hasher.generateHash(collectedData);
 }
 
 export const REGION = "GOS";

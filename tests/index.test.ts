@@ -49,11 +49,11 @@ test('creation with good config should succeed', () => {
 test('hashing data should result in a hash and a source', () => {
     const h = getTestHasher()
 
-    expect(h.generateHashForExtractedObject({
-        static: ["a", "b", "c"],
-    })).toEqual({
-        hashed_id: "JFO25BNLV6JPLHKXROXCXJLZQG63K7XTUVFVZ56YCUKAHRZYSTIQ====",
-        hashed_id_src: "abc",
-    })
+    const data = { a: "A", b: "B", c: "C", d: "D" };
+    const colConfig = { static: ["a", "b", "c" ], to_translate: [], reference: [] };
 
+    expect(h.generateHashForObject(colConfig, data)).toEqual({
+        hashed_id: "V6SLVUFRBKYAJOO3J2PHY33SAEKDPOWRQTUCJM6UKY6SFG3GRF5A====",
+        hashed_id_src: "ABC",
+    })
 });
