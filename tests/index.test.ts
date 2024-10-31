@@ -48,12 +48,16 @@ test('creation with good config should succeed', () => {
 });
 
 test('hashing data should result in a hash and a source', () => {
-    const h = getTestHasher()
+    const config: Config.Options["algorithm"] ={
+        salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+        hash: { strategy: "SHA256" },
+        columns: { static: ["a", "b"], to_translate: ["fname", "lname"], reference: [ "ref1", "ref2" ]}
+    };
+    const h = getTestHasher(config)
 
     const data = { fname: "فرج", lname: "سموم", a: "A", b: "B", ref1: "REF1", ref2: "REF2" }
-    const colConfig = { static: ["a", "b"], to_translate: ["fname", "lname"], reference: [ "ref1", "ref2" ]}
 
-    expect(h.generateHashForObject(colConfig, data)).toEqual({
+    expect(h.generateHashForObject( data)).toEqual({
         USCADI: 'MPXVV2UVCIRRQK7UA3IDDDQW6B2IZYHPSFRL7CU6IR6NK5J3XRFQ====',
         document_hash: 'THHDQVM2VAH4O4KWSAOV7Q662IIFGA36KZH4MYCY5KUBROGMAWKQ====',
         USCADI_src: 'ABFRJSMMF1620S2550',
@@ -62,15 +66,38 @@ test('hashing data should result in a hash and a source', () => {
 })
 
 test('providing no reference should result in empty reference hash', () => {
-    const h = getTestHasher()
+    const config: Config.Options["algorithm"] ={
+        salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+        hash: { strategy: "SHA256" },
+        columns: { static: ["a", "b"], to_translate: ["fname", "lname"], reference: []}
+    };
+    const h = getTestHasher(config)
 
     const data = { fname: "فرج", lname: "سموم", a: "A", b: "B", ref1: "REF1", ref2: "REF2" }
     const colConfig = { static: ["a", "b"], to_translate: ["fname", "lname"], reference: []}
 
-    expect(h.generateHashForObject(colConfig, data)).toEqual({
+    expect(h.generateHashForObject(data)).toEqual({
         USCADI: 'MPXVV2UVCIRRQK7UA3IDDDQW6B2IZYHPSFRL7CU6IR6NK5J3XRFQ====',
         document_hash: '',
         USCADI_src: 'ABFRJSMMF1620S2550',
+        document_hash_src: ''
+    });
+});
+
+test('providing an empty reference field should result in empty reference hash', () => {
+    const config: Config.Options["algorithm"] ={
+        salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+        hash: { strategy: "SHA256" },
+        columns: { static: ["a", "b"], to_translate: ["fname", "lname"], reference: [ "ref1", "ref2"]}
+    };
+    const h = getTestHasher(config)
+
+    const data = { fname: "فرج", lname: "سموم", a: "A", b: "B", ref1: "REF1", ref2: "" }
+
+    expect(h.generateHashForObject(data)).toEqual({
+        USCADI: 'MPXVV2UVCIRRQK7UA3IDDDQW6B2IZYHPSFRL7CU6IR6NK5J3XRFQ====',
+        USCADI_src: 'ABFRJSMMF1620S2550',
+        document_hash: '',
         document_hash_src: ''
     });
 });

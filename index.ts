@@ -99,26 +99,18 @@ class UscadiHasher extends BaseHasher {
     // return a string with the "refernce" parts concatednated as per the USCADI
     // spec
     private composeReferenceHashSource = (extractedObj: Validation.Data["row"]) => {
-        return joinFieldsForHash(cleanValueList(extractedObj.reference));
+        const referenceData = cleanValueList(extractedObj.reference);
+        // if any values of reference fields are blank, don't hash and return blank.
+        if (referenceData.some((value) => value === "")) return "";
+        
+        return joinFieldsForHash(referenceData);
     }
 
-    // Helper that generates a hash based on a concatenation result
-    private collectData = (extractedObj: Validation.Data["row"], collectorFn: CallableFunction): string => {
-        // collect the data for hashing
-        const collectedData = collectorFn(extractedObj);
+    generateHashForObject(obj: Validation.Data["row"]) {
+        const extractedObj = extractAlgoColumnsFromObject(this.config.columns, obj);
 
-        // if there is an empty string only, return an empty string (no hash)
-        if (collectedData === '') {
-            return '';
-        }
-        // if there is data generate a hash
-        return collectedData;
-    }
-
-    generateHashForObject(columnConfig: Config.AlgorithmColumns, obj: Validation.Data["row"]) {
-        const extractedObj = extractAlgoColumnsFromObject(columnConfig, obj);
-        const toBeHashed = this.collectData(extractedObj, this.composeHashSource);
-        const toBeHashedRef = this.collectData(extractedObj, this.composeReferenceHashSource);
+        const toBeHashed = this.composeHashSource(extractedObj);
+        const toBeHashedRef = this.composeReferenceHashSource(extractedObj);
         return {
             "USCADI": toBeHashed.length > 0 ? this.generateHashForValue(toBeHashed) : "",
             "document_hash": toBeHashedRef.length > 0 ? this.generateHashForValue(toBeHashedRef): "",
