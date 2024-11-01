@@ -23,8 +23,7 @@ export default {
     "\u0621": "C",
     "\u0622": "M",
     "\u0623": "O",
-    // TODO: THIS IS NOT OK -- THIS IS ONLY COMMENTED OUT HERE TO MATCH THE PYTHON OUTPUT
-    // "\u0624": "W",
+    "\u0624": "W",
     "\u0625": "I",
     "\u0626": "Q",
     "\u0627": "A",
@@ -55,8 +54,7 @@ export default {
     "\u0645": "m",
     "\u0646": "n",
     "\u0647": "h",
-    // TODO: THIS IS NOT OK -- THIS IS ONLY COMMENTED OUT HERE TO MATCH THE PYTHON OUTPUT
-    // "\u0648": "w",
+    "\u0648": "w",
     "\u0649": "Y",
     "\u064A": "y",
     "\u064B": "F",
@@ -73,7 +71,4 @@ export default {
     "\u0686": "J",
     "\u06A4": "B",
     "\u06AF": "G",
-    // TODO: THIS IS NOT OK -- THESE TWO ARE ONLY HERE TO MATCH THE PYTHON OUTPUT
-    "(": "P",
-    ")": "P",
 } as CharMap

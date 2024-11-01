@@ -58,9 +58,9 @@ test('hashing data should result in a hash and a source', () => {
     const data = { fname: "فرج", lname: "سموم", a: "A", b: "B", ref1: "REF1", ref2: "REF2" }
 
     expect(h.generateHashForObject( data)).toEqual({
-        USCADI: 'MPXVV2UVCIRRQK7UA3IDDDQW6B2IZYHPSFRL7CU6IR6NK5J3XRFQ====',
+        USCADI: 'Y7PUHSSAGBJQ7CQVQL3BZX3JVQHCTH26K5HSBAJZS3C5RPLHYXOQ====',
         document_hash: 'THHDQVM2VAH4O4KWSAOV7Q662IIFGA36KZH4MYCY5KUBROGMAWKQ====',
-        USCADI_src: 'ABFRJSMMF1620S2550',
+        USCADI_src: 'ABFRJSMWMF1620S2550',
         document_hash_src: 'REF1REF2'
     });
 })
@@ -77,9 +77,9 @@ test('providing no reference should result in empty reference hash', () => {
     const colConfig = { static: ["a", "b"], to_translate: ["fname", "lname"], reference: []}
 
     expect(h.generateHashForObject(data)).toEqual({
-        USCADI: 'MPXVV2UVCIRRQK7UA3IDDDQW6B2IZYHPSFRL7CU6IR6NK5J3XRFQ====',
+        USCADI: 'Y7PUHSSAGBJQ7CQVQL3BZX3JVQHCTH26K5HSBAJZS3C5RPLHYXOQ====',
         document_hash: '',
-        USCADI_src: 'ABFRJSMMF1620S2550',
+        USCADI_src: 'ABFRJSMWMF1620S2550',
         document_hash_src: ''
     });
 });
@@ -95,8 +95,8 @@ test('providing an empty reference field should result in empty reference hash',
     const data = { fname: "فرج", lname: "سموم", a: "A", b: "B", ref1: "REF1", ref2: "" }
 
     expect(h.generateHashForObject(data)).toEqual({
-        USCADI: 'MPXVV2UVCIRRQK7UA3IDDDQW6B2IZYHPSFRL7CU6IR6NK5J3XRFQ====',
-        USCADI_src: 'ABFRJSMMF1620S2550',
+        USCADI: 'Y7PUHSSAGBJQ7CQVQL3BZX3JVQHCTH26K5HSBAJZS3C5RPLHYXOQ====',
+        USCADI_src: 'ABFRJSMWMF1620S2550',
         document_hash: '',
         document_hash_src: ''
     });
