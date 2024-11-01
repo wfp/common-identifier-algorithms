@@ -108,7 +108,7 @@ mother_first_name = [
 
 dob_year = [
     { op = "min_value", value = 1901 },
-    { op = "max_value", value = 2024 }, # TODO: not more than current year
+    { op = "max_value", value = "{{currentYear}}" }
 ]
 
 document_type = [
