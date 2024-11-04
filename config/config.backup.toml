@@ -106,10 +106,13 @@ dob_year = [
 
 document_type = [
     { op = "field_type", value = "str" },
-    { op = "options", value = [ "", "NATIONAL_ID", "PERSONAL_ID", "LOCAL_COUNCIL_CARD" ], message = "must be blank or one of NATIONAL_ID, PERSONAL_ID, or LOCAL_COUNCIL_CARD" }
+    { op = "options", value = [ "", "NATIONAL_ID", "PERSONAL_ID", "LOCAL_COUNCIL_CARD" ], message = "must be blank or one of NATIONAL_ID, PERSONAL_ID, or LOCAL_COUNCIL_CARD" },
+    { op = "linked_field", target = "document_id" }
 ]
 
-document_id = [] # TODO: Guidance needed from cluster
+document_id = [
+    { op = "linked_field", target = "document_type" }
+]
 
 # assistance columns
 organization = [
@@ -221,4 +224,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="e91f3e1c00c927bb7babcb4dc0144668"
+config_signature="acd96ce8b25c70f1e6c305b044342b65"
