@@ -111,7 +111,7 @@ document_type = [
 ]
 
 document_id = [
-    { op = "regex_match", value = "[a-zA-Z0-9-_]+", message="must only consist of alphanumeric characters and supported special characters" },
+    { op = "regex_match", value = '(?!.*\S)|[a-zA-Z0-9-_]+', message="must only consist of alphanumeric characters and supported special characters" },
     { op = "linked_field", target = "document_type" }
 ]
 
@@ -224,4 +224,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="a77e3f508dad0dc38f83b7718687622f"
+config_signature="94845e64701a906ff1333d78ba22206a"
