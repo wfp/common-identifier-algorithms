@@ -1,6 +1,6 @@
 [meta]
 region="NWS"
-version="0.1.4"
+version="1.0.0"
 
 [messages]
 terms_and_conditions="""
@@ -223,4 +223,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="02f474ec62b9b0de83bd6cb07e02190d"
+config_signature="e711f6be718ac4040e57b15903412320"
