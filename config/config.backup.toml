@@ -142,13 +142,12 @@ amount = [
 
 start = [
     { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd" },
-    { op = "date_diff", value = "+2M"},
-    { op = "date_diff", value = "-12M"}
+    { op = "date_diff", value = "-12M:+2M", message = "must be within 1 year in the past or 2 months in the future"},
 ]
 
 end = [
     { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd" },
-    { op = "date_field_diff", target = "start", value="-12M", message="must be within a year of Start"},
+    { op = "date_field_diff", target = "start", value=":+12M", message="must be within a year of Start"},
 ]
 
 
@@ -224,4 +223,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="acd96ce8b25c70f1e6c305b044342b65"
+config_signature="02f474ec62b9b0de83bd6cb07e02190d"
