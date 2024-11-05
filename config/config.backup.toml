@@ -1,13 +1,9 @@
 [meta]
-# The application binary must support this region to allow the use of this configuration file
 region="GOS"
-
-# The version of the configuration file
-version="0.1.0"
+version="1.0.0"
 
 [messages]
 
-# HTML to display as Terms And Conditions
 terms_and_conditions="""
 <strong>Common Identifier Application</strong>
 <p>
@@ -24,7 +20,8 @@ terms_and_conditions="""
     more details.
 </p>
 <p>
-    You should have received a copy of the GNU General Public License along with this program. If not, see <a href="https://www.gnu.org/licenses" target="_blank">gnu.org</a>.
+    You should have received a copy of the GNU General Public License along with this program. If not, see 
+    <a href="https://www.gnu.org/licenses" target="_blank">gnu.org</a>.
 </p>
 <p>
     World Food Programme (WFP) disclaims any responsibility for how the program is used. Users are solely
@@ -54,13 +51,13 @@ error_in_salt="""
 
 [source]
 columns = [
-    { name = "National ID", alias = "national_id" },
-    { name = "Organization", alias = "organization" },
-    { name = "Category", alias = "category" },
-    { name = "Currency", alias = "currency" },
-    { name = "Amount", alias = "amount" },
-    { name = "Start (yyyyMMdd)", alias = "start" },
-    { name = "End (yyyyMMdd)", alias = "end" },
+    { name = "National ID",      alias = "national_id"  },
+    { name = "Organization",     alias = "organization" },
+    { name = "Category",         alias = "category"     },
+    { name = "Currency",         alias = "currency"     },
+    { name = "Amount",           alias = "amount"       },
+    { name = "Start (yyyyMMdd)", alias = "start"        },
+    { name = "End (yyyyMMdd)",   alias = "end"          },
 ]
 
 [validations]
@@ -69,16 +66,14 @@ columns = [
     { op = "max_field_length", value = 200 },
 ]
 
-# biographic columns
 national_id = [
     { op = "field_type", value = "str" },
     { op = "regex_match", value = '(\d{11})', message="must be 11 numeric digits" }
 ]
 
-# assistance columns
 organization = [
     { op = "field_type", value = "str" },
-    { op = "min_field_length", value = 3 },
+    { op = "min_field_length", value = 2 },
     { op = "max_field_length", value = 10 },
     { op = "same_value_for_all_rows" },
 ]
@@ -93,24 +88,23 @@ category = [
 
 currency = [
     { op = "field_type", value = "str" },
+    { op = "regex_match", value = 'SYP', message="must be SYP (Syrian Pounds)" },
     { op = "same_value_for_all_rows" },
-    { op = "regex_match", value = 'SYP', message="must be SYP (Syrian Pounds)" }
 ]
 
 amount = [
     { op = "min_value", value = 1 },
-    { op = "max_value", value = 300000000 },
+    { op = "max_value", value = 300_000_000 },
 ]
 
 start = [
     { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd, e.g. 20240301" }, # yyyyMMdd
-    { op = "date_diff", value = "+3M"},
-    { op = "date_diff", value = "-12M"}
+    { op = "date_diff", value = "-12M:+2M", message = "must be within 1 year in the past or 2 months in the future"},
 ]
 
 end = [
     { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd, e.g. 20240301"  }, # yyyyMMdd
-    { op = "date_field_diff", target = "start", value="-12M", message="must be within a year of Start"},
+    { op = "date_field_diff", target = "start", value=":+12M", message="must be within a year of Start"},
 ]
 
 [algorithm]
@@ -123,60 +117,50 @@ static = [
 reference = []
 
 [algorithm.hash]
-strategy = "SHA256" # SHA256 | SCRYPT | ARGON2
-num_iterations = 512
-parallelism = 1
-block_size = 8
-size = 32
+strategy = "SHA256"
 
 [algorithm.salt]
-source = "FILE" # STRING | FILE
-# The regular expression to validate the salt file
+source = "FILE"
 validator_regex = "-----BEGIN PGP PUBLIC KEY BLOCK-----[A-Za-z0-9+/=\\s]+-----END PGP PUBLIC KEY BLOCK-----"
 
 
 [algorithm.salt.value]
-# $APPDATA can be used to substitute the application data directory
 win32 = "$APPDATA/BuildingBlocks/WFP SYR NWS stage (BE85CAE8) – Public.asc"
-# $HOME can be used to substitute the users home directory
 darwin = "$APPDATA/BuildingBlocks/WFP SYR NWS stage (BE85CAE8) – Public.asc"
 
 
 [destination]
 columns = [
     { name = "Common Identifier", alias = "hashed_id" },
-    { name = "Organization", alias = "organization" },
-    { name = "Category", alias = "category" },
-    { name = "Currency", alias = "currency" },
-    { name = "Amount", alias = "amount" },
-    { name = "Start (yyyyMMdd)", alias = "start" },
-    { name = "End (yyyyMMdd)", alias = "end" },
+    { name = "Organization",      alias = "organization" },
+    { name = "Category",          alias = "category" },
+    { name = "Currency",          alias = "currency" },
+    { name = "Amount",            alias = "amount" },
+    { name = "Start (yyyyMMdd)",  alias = "start" },
+    { name = "End (yyyyMMdd)",    alias = "end" },
 ]
-# The postfix of the output file. Anything inside double curly braces
-# will be treated as a date format string.
-# FORMATTING TOKEN GUIDE: https://date-fns.org/v3.6.0/docs/lightFormat
 postfix = "-OUTPUT-GOS-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
 
 [destination_map]
 columns = [
-    { name = "National ID", alias = "national_id" },
+    { name = "National ID",       alias = "national_id" },
     { name = "Common Identifier", alias = "hashed_id" }
 ]
 postfix = "-MAPPING-GOS-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
 
 [destination_errors]
 columns = [
-    { name = "Errors", alias = "errors" },
-    { name = "National ID", alias = "national_id" },
-    { name = "Organization", alias = "organization" },
-    { name = "Category", alias = "category" },
-    { name = "Currency", alias = "currency" },
-    { name = "Amount", alias = "amount" },
-    { name = "Start (yyyyMMdd)", alias = "start" },
-    { name = "End (yyyyMMdd)", alias = "end" },
+    { name = "Errors",            alias = "errors" },
+    { name = "National ID",       alias = "national_id" },
+    { name = "Organization",      alias = "organization" },
+    { name = "Category",          alias = "category" },
+    { name = "Currency",          alias = "currency" },
+    { name = "Amount",            alias = "amount" },
+    { name = "Start (yyyyMMdd)",  alias = "start" },
+    { name = "End (yyyyMMdd)",    alias = "end" },
 ]
 postfix = "-ERRORS-GOS-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="63cea18c968de00e8c9cb9a478d4d935"
+config_signature="5b700ac2b5085500748788a0da1446bf"
