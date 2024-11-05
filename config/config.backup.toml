@@ -76,7 +76,7 @@ columns = [
 
 individual_reference = [
     { op = "field_type", value = "str" },
-    { op = "regex_match", value = "[a-zA-Z0-9!\"#$%&'()*+\\-./:;?@[\\]^_{|}~]+", message="must only consist of alphanumeric characters and supported special characters" } # TBD
+    { op = "regex_match", value = "[a-zA-Z0-9!\"#$%&'()*+\\-./:;?@[\\]^_{|}~]+", message="must only consist of alphanumeric characters and supported special characters" }
 ]
 
 first_name = [
@@ -111,6 +111,7 @@ document_type = [
 ]
 
 document_id = [
+    { op = "regex_match", value = "[a-zA-Z0-9-_]+", message="must only consist of alphanumeric characters and supported special characters" },
     { op = "linked_field", target = "document_type" }
 ]
 
@@ -223,4 +224,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="e711f6be718ac4040e57b15903412320"
+config_signature="a77e3f508dad0dc38f83b7718687622f"
