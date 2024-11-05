@@ -1,13 +1,8 @@
 [meta]
-# The application binary must support this region to allow the use of this configuration file
 region="NWS"
-
-# The version of the configuration file
-version="0.1.4"
+version="1.0.0"
 
 [messages]
-
-# HTML to display as Terms And Conditions
 terms_and_conditions="""
 <strong>Common Identifier Application</strong>
 <p>
@@ -79,7 +74,6 @@ columns = [
     { op = "max_field_length", value = 200 },
 ]
 
-# biographic columns
 individual_reference = [
     { op = "field_type", value = "str" },
     { op = "regex_match", value = "[a-zA-Z0-9!\"#$%&'()*+\\-./:;?@[\\]^_{|}~]+", message="must only consist of alphanumeric characters and supported special characters" } # TBD
@@ -105,7 +99,6 @@ mother_first_name = [
     { op = "language_check", value = "Arabic", message="is not Arabic"}
 ]
 
-
 dob_year = [
     { op = "min_value", value = 1901 },
     { op = "max_value", value = "{{currentYear}}" }
@@ -113,10 +106,13 @@ dob_year = [
 
 document_type = [
     { op = "field_type", value = "str" },
-    { op = "options", value = [ "", "NATIONAL_ID", "PERSONAL_ID", "LOCAL_COUNCIL_CARD" ] }
+    { op = "options", value = [ "", "NATIONAL_ID", "PERSONAL_ID", "LOCAL_COUNCIL_CARD" ], message = "must be blank or one of NATIONAL_ID, PERSONAL_ID, or LOCAL_COUNCIL_CARD" },
+    { op = "linked_field", target = "document_id" }
 ]
 
-document_id = [] # TODO: Guidance needed from cluster
+document_id = [
+    { op = "linked_field", target = "document_type" }
+]
 
 # assistance columns
 organization = [
@@ -145,14 +141,13 @@ amount = [
 ]
 
 start = [
-    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd, e.g. 20240301" }, # yyyyMMdd
-    { op = "date_diff", value = "+2M"},
-    { op = "date_diff", value = "-12M"}
+    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd" },
+    { op = "date_diff", value = "-12M:+2M", message = "must be within 1 year in the past or 2 months in the future"},
 ]
 
 end = [
-    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd, e.g. 20240301" }, # yyyyMMdd
-    { op = "date_field_diff", target = "start", value="-12M", message="must be within a year of Start"},
+    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd" },
+    { op = "date_field_diff", target = "start", value=":+12M", message="must be within a year of Start"},
 ]
 
 
@@ -174,25 +169,15 @@ reference = [
 ]
 
 [algorithm.hash]
-strategy = "SHA256" # SHA256 | SCRYPT | ARGON2
-num_iterations = 512
-parallelism = 1
-block_size = 8
-size = 32
-
+strategy = "SHA256"
 
 [algorithm.salt]
-source = "FILE" # STRING | FILE
-# The regular expression to validate the salt file
+source = "FILE"
 validator_regex = "-----BEGIN PGP PUBLIC KEY BLOCK-----[A-Za-z0-9+/=\\s]+-----END PGP PUBLIC KEY BLOCK-----"
 
-
 [algorithm.salt.value]
-# $APPDATA can be used to substitute the application data directory
 win32 = "$APPDATA/BuildingBlocks/SYR-NWS-PROD (440E1B46) – Public.asc"
-# $HOME can be used to substitute the users home directory
 darwin = "$APPDATA/BuildingBlocks/SYR-NWS-PROD (440E1B46) – Public.asc"
-
 
 [destination]
 columns = [
@@ -205,9 +190,7 @@ columns = [
     { name = "End (yyyyMMdd)", alias = "end" },
     { name = "Reference Identifier", alias = "document_hash" },
 ]
-# The postfix of the output file. Anything inside double curly braces
-# will be treated as a date format string.
-# FORMATTING TOKEN GUIDE: https://date-fns.org/v3.6.0/docs/lightFormat
+
 postfix = "-OUTPUT-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 [destination_map]
@@ -240,4 +223,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="76bbc66e977c796d6720dcea85eab771"
+config_signature="e711f6be718ac4040e57b15903412320"
