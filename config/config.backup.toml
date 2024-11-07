@@ -69,27 +69,26 @@ columns = [
 ]
 
 national_id = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "regex_match", value = '(\d{11})', message="must be 11 numeric digits" }
 ]
 
 organization = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "min_field_length", value = 2 },
     { op = "max_field_length", value = 10 },
     { op = "same_value_for_all_rows" },
 ]
 
 category = [
-    { op = "field_type", value = "str" },
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "min_field_length", value = 2 },
     { op = "max_field_length", value = 15 },
     { op = "same_value_for_all_rows" },
 ]
 
 currency = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "regex_match", value = 'SYP', message="must be SYP (Syrian Pounds)" },
     { op = "same_value_for_all_rows" },
 ]
