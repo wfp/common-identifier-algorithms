@@ -24,7 +24,9 @@ terms_and_conditions="""
     <a href="https://www.gnu.org/licenses" target="_blank">gnu.org</a>.
 </p>
 <p>
-    World Food Programme (WFP) disclaims any responsibility for how the program is used. Users are solely
+    World Food Programme (WFP) disclaims any responsibility for how the program is used. This Program may collect, 
+    store or otherwise process personal data provided by you and/or Users. World Food Programme represents that it has 
+    no access to these personal data and that such access is not technically feasible. Users are solely
     responsible for ensuring their use of the program complies with all applicable norms and regulations, including
     those on data privacy and protection, and obtaining necessary consents and security measures where required.
 </p>
@@ -125,9 +127,8 @@ validator_regex = "-----BEGIN PGP PUBLIC KEY BLOCK-----[A-Za-z0-9+/=\\s]+-----EN
 
 
 [algorithm.salt.value]
-win32 = "$APPDATA/BuildingBlocks/WFP SYR NWS stage (BE85CAE8) – Public.asc"
-darwin = "$APPDATA/BuildingBlocks/WFP SYR NWS stage (BE85CAE8) – Public.asc"
-
+win32 = "$APPDATA\\BuildingBlocks\\SYR-GOS-PROD (FC14D1D5) – Public.asc"
+darwin = "$APPDATA\\BuildingBlocks\\SYR-GOS-PROD (FC14D1D5) – Public.asc"
 
 [destination]
 columns = [
