@@ -75,27 +75,27 @@ columns = [
 ]
 
 individual_reference = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "regex_match", value = "[a-zA-Z0-9!\"#$%&'()*+\\-./:;?@[\\]^_{|}~]+", message="must only consist of alphanumeric characters and supported special characters" }
 ]
 
 first_name = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "language_check", value = "Arabic", message="is not Arabic"}
 ]
 
 last_name = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "language_check", value = "Arabic", message="is not Arabic"}
 ]
 
 father_first_name = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "language_check", value = "Arabic", message="is not Arabic"}
 ]
 
 mother_first_name = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "language_check", value = "Arabic", message="is not Arabic"}
 ]
 
@@ -105,7 +105,7 @@ dob_year = [
 ]
 
 document_type = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "options", value = [ "", "NATIONAL_ID", "PERSONAL_ID", "LOCAL_COUNCIL_CARD" ], message = "must be blank or one of NATIONAL_ID, PERSONAL_ID, or LOCAL_COUNCIL_CARD" },
     { op = "linked_field", target = "document_id" }
 ]
@@ -117,21 +117,21 @@ document_id = [
 
 # assistance columns
 organization = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "min_field_length", value = 2 },
     { op = "max_field_length", value = 10 },
     { op = "same_value_for_all_rows" },
 ]
 
 category = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "min_field_length", value = 2 },
     { op = "max_field_length", value = 15 },
     { op = "same_value_for_all_rows" }
 ]
 
 currency = [
-    { op = "field_type", value = "str" },
+    { op = "field_type", value = "string" },
     { op = "same_value_for_all_rows" },
     { op = "regex_match", value = 'USD', message="must be USD" },
 ]
@@ -224,4 +224,4 @@ postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
 
 
 [signature]
-config_signature="94845e64701a906ff1333d78ba22206a"
+config_signature="e0f7cc31a33237217898920758170c61"
