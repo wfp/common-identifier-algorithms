@@ -114,9 +114,6 @@ class UscadiHasher extends BaseHasher {
         return {
             "USCADI": toBeHashed.length > 0 ? this.generateHashForValue(toBeHashed) : "",
             "document_hash": toBeHashedRef.length > 0 ? this.generateHashForValue(toBeHashedRef): "",
-            
-            "USCADI_src": this.composeHashSource(extractedObj),
-            "document_hash_src": this.composeReferenceHashSource(extractedObj),
         }
     }
 }

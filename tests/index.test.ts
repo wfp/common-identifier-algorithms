@@ -60,8 +60,6 @@ test('hashing data should result in a hash and a source', () => {
     expect(h.generateHashForObject( data)).toEqual({
         USCADI: 'Y7PUHSSAGBJQ7CQVQL3BZX3JVQHCTH26K5HSBAJZS3C5RPLHYXOQ====',
         document_hash: 'THHDQVM2VAH4O4KWSAOV7Q662IIFGA36KZH4MYCY5KUBROGMAWKQ====',
-        USCADI_src: 'ABFRJSMWMF1620S2550',
-        document_hash_src: 'REF1REF2'
     });
 })
 
@@ -79,8 +77,6 @@ test('providing no reference should result in empty reference hash', () => {
     expect(h.generateHashForObject(data)).toEqual({
         USCADI: 'Y7PUHSSAGBJQ7CQVQL3BZX3JVQHCTH26K5HSBAJZS3C5RPLHYXOQ====',
         document_hash: '',
-        USCADI_src: 'ABFRJSMWMF1620S2550',
-        document_hash_src: ''
     });
 });
 
@@ -96,8 +92,6 @@ test('providing an empty reference field should result in empty reference hash',
 
     expect(h.generateHashForObject(data)).toEqual({
         USCADI: 'Y7PUHSSAGBJQ7CQVQL3BZX3JVQHCTH26K5HSBAJZS3C5RPLHYXOQ====',
-        USCADI_src: 'ABFRJSMWMF1620S2550',
         document_hash: '',
-        document_hash_src: ''
     });
 });
