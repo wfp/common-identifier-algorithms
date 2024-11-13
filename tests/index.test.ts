@@ -16,8 +16,8 @@
  */
 
 
-import { REGION, makeHasher } from "../index.js";
-import { makeArabicSoundexEngine } from "../engines/arabic-soundex.js";
+import { makeHasher } from "../index.js";
+import { transliterateWord } from "../engines/transliteration.js";
 import { Config } from "../../algo-shared/config/Config.js";
 
 const TEST_CONFIG: Config.Options["algorithm"] ={
@@ -45,6 +45,11 @@ test('creation with non-supported algorithms should fail', () => {
 
 test('creation with good config should succeed', () => {
     expect(hasherWithConfig(TEST_CONFIG)).not.toThrow()
+});
+
+test('transliterate with non-mapped char should return char', () => {
+    const mapping = { "a": "A", "b": "B" }
+    expect(transliterateWord("abc", mapping)).toEqual("ABc");
 });
 
 test('hashing data should result in a hash and a source', () => {

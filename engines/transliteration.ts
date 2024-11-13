@@ -21,6 +21,6 @@ import TransliterationMapping from '../charmaps/transliteration-mapping.js';
 // Transliterates a word using the provided mapping
 export function transliterateWord(word: string, mapping=TransliterationMapping) {
     return Array.from(word).map((char) => {
-        return mapping[char] ||  char
+        return mapping[char] || char
     }).join('')
 }

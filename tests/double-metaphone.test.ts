@@ -19,7 +19,7 @@ import { doubleMetaphone } from "../engines/double-metaphone.js"
 
 test("general metaphone processing", ()=> {
 
-    const TEST_DATA = [
+    const TEST_DATA: [string, Array<string>][] = [
         ["", ["", ""]],
         ["A", ["A", "1"]],
         ["X XX", ["SKK", "1S1S"]],
@@ -57,10 +57,8 @@ test("general metaphone processing", ()=> {
         ["SCHMOCH",["SMK","K12"]], ["SCHOOER",["SKR","31"]], ["PAIS",["PS","1 "]],
     ];
 
+    TEST_DATA.forEach(([input, expected]) => {
+        expect(doubleMetaphone(input)).toEqual(expected);
+    })
 
-
-    // TEST_DATA.forEach(([input, expected]) => {
-    //     expect(doubleMetaphone(input)).toEqual(expected);
-    // })
-
-})
+});

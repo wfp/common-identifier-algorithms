@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 /*
  * This file is part of Building Blocks CommonID Tool
  * Copyright (c) 2024 WFP
