@@ -2,6 +2,17 @@
 
 This is the algorithm repository for the USCADI hashing algorithm of the Building Blocks CommonID Tool, specifically implemented to meet the requirements of the North-West Syria region.
 
+## Repo Structure
+
+```toml
+📦algo-nws
+ ┣ 📂charmaps       # character maps for transliteration and soundex
+ ┣ 📂config         # contains the default configuration file and any UI styling overrides
+ ┣ 📂engines        # soundex and transliteration engines
+ ┣ 📂tests          # tests for the algorithm
+ ┣ 📜index.ts
+```
+
 ## Input Schema
 
 The specific schema of input files in defined via the configuration file `[source]` section, but broadly this USCADI algorithm is expecting to receive a set of biographic fields, a set of reference fields, and a set of static assistance-related fields. Here is an example of such a schema:
