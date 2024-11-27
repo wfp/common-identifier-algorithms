@@ -15,11 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject } from '../algo-shared/hashing/utils.js';
-
-import { BaseHasher, makeHasherFunction } from '../algo-shared/hashing/base.js';
-import { Config } from '../algo-shared/config/Config.js';
-import { Validation } from '../algo-shared/validation/Validation.js';
+import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject, BaseHasher, makeHasherFunction } from 'common-identifier-algorithm-shared';
+import type { Config, Validation } from 'common-identifier-algorithm-shared';
 
 class GenericHasher extends BaseHasher {
     constructor(config: Config.Options["algorithm"]) {
