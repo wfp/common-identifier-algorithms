@@ -18,7 +18,7 @@
 
 import { makeHasher } from "../index.js";
 import { transliterateWord } from "../engines/transliteration.js";
-import { Config } from "../../algo-shared/config/Config.js";
+import type { Config } from 'common-identifier-algorithm-shared';
 
 const TEST_CONFIG: Config.Options["algorithm"] ={
     salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },

@@ -16,7 +16,7 @@
  */
 
 
-import { Config } from '../../algo-shared/config/Config.js';
+import type { Config } from 'common-identifier-algorithm-shared';
 import { makeHasher, REGION } from '../index.js';
 
 const TEST_CONFIG: Config.Options["algorithm"] ={
