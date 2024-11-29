@@ -8,9 +8,6 @@
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --config=jest.config.js"
   },
-  "dependencies": {
-    "common-identifier-algorithm-shared": "github:wfp/common-identifier-algorithm-shared#develop"
-  },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "commander": "^12.1.0",
@@ -18,5 +15,8 @@
     "jest-junit": "^16.0.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "common-identifier-algorithm-shared": "github:wfp/common-identifier-algorithm-shared"
   }
 }
