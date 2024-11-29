@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CharMap } from "./charmap.js";
+import type { CharMap } from "./charmap.js";
 
 
 // Transliteration map (one to one mode) between each normalized Arabic letter

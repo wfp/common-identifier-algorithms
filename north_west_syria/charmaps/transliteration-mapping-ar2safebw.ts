@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CharMap } from "./charmap.js";
+import type { CharMap } from "./charmap.js";
 
 
 // This table is comes from Camel Tools and is used for transliteration before metaphone

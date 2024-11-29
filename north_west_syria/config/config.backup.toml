@@ -1,6 +1,7 @@
 [meta]
 region="NWS"
 version="1.0.0"
+signature="9d07258d2c0bc1d265e588c51cca6ba5"
 
 [messages]
 terms_and_conditions="""
@@ -155,7 +156,7 @@ end = [
 [algorithm]
 
 [algorithm.columns]
-to_translate = [
+process = [
     "first_name",
     "last_name",
     "father_first_name",
@@ -178,7 +179,6 @@ validator_regex = "-----BEGIN PGP PUBLIC KEY BLOCK-----[A-Za-z0-9+/=\\s]+-----EN
 
 [algorithm.salt.value]
 win32 = "$APPDATA/BuildingBlocks/SYR-NWS-PROD (440E1B46) – Public.asc"
-darwin = "$APPDATA/BuildingBlocks/SYR-NWS-PROD (440E1B46) – Public.asc"
 
 [destination]
 columns = [
@@ -221,7 +221,3 @@ columns = [
     { name = "End (yyyyMMdd)", alias = "end" },
 ]
 postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
-
-
-[signature]
-config_signature="e0f7cc31a33237217898920758170c61"

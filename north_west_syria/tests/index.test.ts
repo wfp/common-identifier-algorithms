@@ -21,9 +21,9 @@ import { transliterateWord } from "../engines/transliteration.js";
 import type { Config } from 'common-identifier-algorithm-shared';
 
 const TEST_CONFIG: Config.Options["algorithm"] ={
-    salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+    salt: { source: "STRING", value: "TEST_HASH" },
     hash: { strategy: "SHA256" },
-    columns: { to_translate: [], static: [], reference: [] }
+    columns: { process: [], static: [], reference: [] }
 };
 
 function hasherWithConfig(cfg: Config.Options["algorithm"]) {
@@ -54,9 +54,9 @@ test('transliterate with non-mapped char should return char', () => {
 
 test('hashing data should result in a hash and a source', () => {
     const config: Config.Options["algorithm"] ={
-        salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+        salt: { source: "STRING", value: "TEST_HASH" },
         hash: { strategy: "SHA256" },
-        columns: { static: ["a", "b"], to_translate: ["fname", "lname"], reference: [ "ref1", "ref2" ]}
+        columns: { static: ["a", "b"], process: ["fname", "lname"], reference: [ "ref1", "ref2" ]}
     };
     const h = getTestHasher(config)
 
@@ -70,14 +70,14 @@ test('hashing data should result in a hash and a source', () => {
 
 test('providing no reference should result in empty reference hash', () => {
     const config: Config.Options["algorithm"] ={
-        salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+        salt: { source: "STRING", value: "TEST_HASH" },
         hash: { strategy: "SHA256" },
-        columns: { static: ["a", "b"], to_translate: ["fname", "lname"], reference: []}
+        columns: { static: ["a", "b"], process: ["fname", "lname"], reference: []}
     };
     const h = getTestHasher(config)
 
     const data = { fname: "فرج", lname: "سموم", a: "A", b: "B", ref1: "REF1", ref2: "REF2" }
-    const colConfig = { static: ["a", "b"], to_translate: ["fname", "lname"], reference: []}
+    const colConfig = { static: ["a", "b"], process: ["fname", "lname"], reference: []}
 
     expect(h.generateHashForObject(data)).toEqual({
         USCADI: 'Y7PUHSSAGBJQ7CQVQL3BZX3JVQHCTH26K5HSBAJZS3C5RPLHYXOQ====',
@@ -87,9 +87,9 @@ test('providing no reference should result in empty reference hash', () => {
 
 test('providing an empty reference field should result in empty reference hash', () => {
     const config: Config.Options["algorithm"] ={
-        salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+        salt: { source: "STRING", value: "TEST_HASH" },
         hash: { strategy: "SHA256" },
-        columns: { static: ["a", "b"], to_translate: ["fname", "lname"], reference: [ "ref1", "ref2"]}
+        columns: { static: ["a", "b"], process: ["fname", "lname"], reference: [ "ref1", "ref2"]}
     };
     const h = getTestHasher(config)
 

@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject, BaseHasher, makeHasherFunction } from 'common-identifier-algorithm-shared';
-import type { Config, Validation } from 'common-identifier-algorithm-shared';
+import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject, BaseHasher } from 'common-identifier-algorithm-shared';
+import type { Config, Validation, makeHasherFunction } from 'common-identifier-algorithm-shared';
 
 // USCADI implementation that takes the extracted ('static', 'to_translate', 'reference')
 // and returns a hashed object

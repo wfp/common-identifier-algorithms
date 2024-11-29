@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CharMap } from "./charmap.js";
+import type { CharMap } from "./charmap.js";
 
 // The aphonix method is based on the 9 phonetic classifications of human speech
 // sounds, which in turn are based on where you put your lips and tongue to make

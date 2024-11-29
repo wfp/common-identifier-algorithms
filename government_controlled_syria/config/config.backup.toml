@@ -1,6 +1,7 @@
 [meta]
 region="GOS"
 version="1.0.0"
+signature="714927020a9c5b86029d341a186642a8"
 
 [messages]
 
@@ -111,7 +112,7 @@ end = [
 [algorithm]
 
 [algorithm.columns]
-to_translate = []
+process = []
 static = [
     "national_id",
 ]
@@ -127,7 +128,6 @@ validator_regex = "-----BEGIN PGP PUBLIC KEY BLOCK-----[A-Za-z0-9+/=\\s]+-----EN
 
 [algorithm.salt.value]
 win32 = "$APPDATA\\BuildingBlocks\\SYR-GOS-PROD (FC14D1D5) – Public.asc"
-darwin = "$APPDATA\\BuildingBlocks\\SYR-GOS-PROD (FC14D1D5) – Public.asc"
 
 [destination]
 columns = [
@@ -160,7 +160,3 @@ columns = [
     { name = "End (yyyyMMdd)",    alias = "end" },
 ]
 postfix = "-ERRORS-GOS-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
-
-
-[signature]
-config_signature="85d12826f42da962124e24902ec8573f"

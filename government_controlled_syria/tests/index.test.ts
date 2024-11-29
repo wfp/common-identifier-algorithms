@@ -20,9 +20,9 @@ import type { Config } from 'common-identifier-algorithm-shared';
 import { makeHasher, REGION } from '../index.js';
 
 const TEST_CONFIG: Config.Options["algorithm"] ={
-    salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+    salt: { source: "STRING", value: "TEST_HASH" },
     hash: { strategy: "SHA256" },
-    columns: { to_translate: [], static: [], reference: [] }
+    columns: { process: [], static: [], reference: [] }
 };
 
 function hasherWithConfig(cfg: Config.Options["algorithm"]) {
@@ -48,9 +48,9 @@ test('creation with good config should succeed', () => {
 
 test('hashing data should result in a hash and a source', () => {
     const config: Config.Options["algorithm"] ={
-        salt: { source: "STRING", value: "TEST_HASH", validator_regex: "" },
+        salt: { source: "STRING", value: "TEST_HASH" },
         hash: { strategy: "SHA256" },
-        columns: { static: ["a", "b", "c" ], to_translate: [], reference: [] }
+        columns: { static: ["a", "b", "c" ], process: [], reference: [] }
     };
     const h = getTestHasher(config)
 

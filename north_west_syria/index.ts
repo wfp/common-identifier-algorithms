@@ -24,8 +24,8 @@ import { doubleMetaphone } from './engines/double-metaphone.js';
 // the soundex engine we'll use
 let arabicSoundexEngine = makeArabicSoundexEngine();
 
-import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject, BaseHasher, makeHasherFunction } from 'common-identifier-algorithm-shared';
-import type { Config, Validation } from 'common-identifier-algorithm-shared';
+import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject, BaseHasher } from 'common-identifier-algorithm-shared';
+import type { Config, Validation, makeHasherFunction } from 'common-identifier-algorithm-shared';
 
 export const REGION = "NWS";
 
@@ -73,7 +73,7 @@ class UscadiHasher extends BaseHasher {
         // the static fields stay the same
         // while the to_translate fields are translated
 
-        let translatedValues = extractedObj.to_translate.map(this.translateValue);
+        let translatedValues = extractedObj.process.map(this.translateValue);
         let staticValues = extractedObj.static;
 
         // The original USCADI algorithm seems to concatenate the translated values
