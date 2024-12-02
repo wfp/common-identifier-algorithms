@@ -1,7 +1,7 @@
 [meta]
 region="ANY"
 version="1.0.0"
-signature="0143d416553e847f1cfb72152beb0e37"
+signature="0a7d798268c94f6e4eff3f4ceb1622aa"
 
 [messages]
 
@@ -109,14 +109,8 @@ reference = []
 strategy = "SHA256"
 
 [algorithm.salt]
-source = "FILE"
-validator_regex = "-----BEGIN PGP PUBLIC KEY BLOCK-----[A-Za-z0-9+/=\\s]+-----END PGP PUBLIC KEY BLOCK-----"
-
-
-[algorithm.salt.value]
-win32 = ""
-darwin = ""
-linux = ""
+source = "STRING"
+value = "{{ some_random_salt_value }}"
 
 [destination]
 columns = [

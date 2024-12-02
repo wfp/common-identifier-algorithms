@@ -16,8 +16,7 @@
  */
 
 import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject, BaseHasher } from 'common-identifier-algorithm-shared';
-import type { makeHasherFunction } from 'common-identifier-algorithm-shared';
-import type { Config, Validation } from 'common-identifier-algorithm-shared';
+import type { Config, Validation, makeHasherFunction } from 'common-identifier-algorithm-shared';
 
 class GenericHasher extends BaseHasher {
     constructor(config: Config.Options["algorithm"]) {
