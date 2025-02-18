@@ -20,7 +20,7 @@ import type { Config, Validation, makeHasherFunction } from 'common-identifier-a
 
 // USCADI implementation that takes the extracted ('static', 'to_translate', 'reference')
 // and returns a hashed object
-class GOSHasher extends BaseHasher {
+class SYRHasher extends BaseHasher {
     constructor(config: Config.Options["algorithm"]) {
         super(config);
     }
@@ -49,11 +49,11 @@ class GOSHasher extends BaseHasher {
     }
 }
 
-export const REGION = "GOS";
+export const REGION = "SYR";
 export const makeHasher: makeHasherFunction = (config: Config.Options["algorithm"]) => {
     switch (config.hash.strategy.toLowerCase()) {
         case 'sha256':
-            return new GOSHasher(config);
+            return new SYRHasher(config);
         default:
             throw new Error(`Unknown hash strategy in config: '${config.hash.strategy}'`);
     }
