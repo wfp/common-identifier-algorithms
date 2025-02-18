@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import type { CharMap } from "./charmap.js";
+import type { CharMap } from "./charmap";
 
 
 // The asoundex method is based on the 7 phonetic classifications of human speech

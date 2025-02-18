@@ -16,8 +16,8 @@
  */
 
 
-import { makeHasher } from "../index.js";
-import { transliterateWord } from "../engines/transliteration.js";
+import { makeHasher } from "../index";
+import { transliterateWord } from "../engines/transliteration";
 import type { Config } from 'common-identifier-algorithm-shared';
 
 const TEST_CONFIG: Config.Options["algorithm"] ={

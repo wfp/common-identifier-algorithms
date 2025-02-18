@@ -15,11 +15,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { transliterateWord } from './engines/transliteration.js';
-import ar2SafeBwMap from './charmaps/transliteration-mapping-ar2safebw.js';
+import { transliterateWord } from './engines/transliteration';
+import ar2SafeBwMap from './charmaps/transliteration-mapping-ar2safebw';
 
-import { makeArabicSoundexEngine } from './engines/arabic-soundex.js';
-import { doubleMetaphone } from './engines/double-metaphone.js';
+import { makeArabicSoundexEngine } from './engines/arabic-soundex';
+import { doubleMetaphone } from './engines/double-metaphone';
 
 // the soundex engine we'll use
 let arabicSoundexEngine = makeArabicSoundexEngine();

@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AsoundexMapping from '../charmaps/asoundex-mapping.js';
-import TransliterationMapping from '../charmaps/transliteration-mapping.js';
+import AsoundexMapping from '../charmaps/asoundex-mapping';
+import TransliterationMapping from '../charmaps/transliteration-mapping';
 
 const TARGET_LANGUAGE_ENGLISH = 'en';
 

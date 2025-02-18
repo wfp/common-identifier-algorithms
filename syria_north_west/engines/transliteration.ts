@@ -16,7 +16,7 @@
  */
 
 
-import TransliterationMapping from '../charmaps/transliteration-mapping.js';
+import TransliterationMapping from '../charmaps/transliteration-mapping';
 
 // Transliterates a word using the provided mapping
 export function transliterateWord(word: string, mapping=TransliterationMapping) {

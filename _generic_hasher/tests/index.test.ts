@@ -17,7 +17,7 @@
 
 
 import type { Config } from 'common-identifier-algorithm-shared';
-import { makeHasher } from '../index.js';
+import { makeHasher } from '../index';
 
 const TEST_CONFIG: Config.Options["algorithm"] ={
     salt: { source: "STRING", value: "TEST_HASH" },
