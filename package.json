@@ -10,11 +10,12 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.5",
     "commander": "^12.1.0",
     "jest": "^29.7.0",
     "jest-junit": "^16.0.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "common-identifier-algorithm-shared": "github:wfp/common-identifier-algorithm-shared"
