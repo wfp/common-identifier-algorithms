@@ -1,7 +1,7 @@
 [meta]
 region="SYR"
-version="1.0.0"
-signature="1043246dd0706b2b661a510e86397aa5"
+version="1.1.0"
+signature="ac44edc153bb87ad40250303b8cece73"
 
 [messages]
 
@@ -90,13 +90,13 @@ category = [
 
 currency = [
     { op = "field_type", value = "string" },
-    { op = "regex_match", value = 'SYP', message="must be SYP (Syrian Pounds)" },
+    { op = "regex_match", value = 'USD', message="must be USD" },
     { op = "same_value_for_all_rows" },
 ]
 
 amount = [
     { op = "min_value", value = 1 },
-    { op = "max_value", value = 300_000_000 },
+    { op = "max_value", value = 600 },
 ]
 
 start = [
