@@ -1,15 +1,13 @@
 // REPLACE ALL REFERENCES TO "_generic_hasher" WITH THE DESIRED ALGORITHM IN THE ALGORITHMS DIRECTORY.
 
 import { loadConfig, preprocessFile, processFile } from 'common-identifier-algorithm-shared';
-import { makeHasher } from '../algorithms/_generic_hasher';
+import { makeHasher, REGION } from '../algorithms/_generic_hasher';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const REGION = 'ANY';
 const CONFIG_PATH = join(__dirname, '..', 'algorithms', '_generic_hasher', 'config', 'config.backup.toml');
-
 const INPUT_PATH = join(__dirname, '..', 'files', '_generic_hasher_input_data_10.csv');
 const OUTPUT_PATH = join(__dirname, '..', 'output', 'output.csv');
 const VALIDATION_ERRORS_PATH = join(__dirname, 'output', 'validation_errors.csv');
