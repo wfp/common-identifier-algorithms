@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# DOCS: this git hook checks the meta.signature in the config file
+#       of every algorithm in the ./algorithms directory. It prevents
+#       the commit if a signature is invalid.
+#
+#       To enable, copy this file to .git/hooks.
+
+if git diff --cached --name-only | grep -q '^algorithms/'; then
+  output=$(tsx tools/config-signature.ts --all 2>&1)
+
+  if [ $? -ne 0 ]; then
+    echo "Pre-commit check failed. Commit aborted.";
+    echo "$output";
+    exit 1
+  fi
+
+else
+  echo "No changes in the algorithms directory. Skipping pre-commit checks."
+fi
+
