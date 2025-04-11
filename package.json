@@ -1,11 +1,13 @@
 {
   "name": "common-identifier-algorithm-shared",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Generate psuedonymous identifiers from tabular data",
   "author": "World Food Programme",
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
+    "clean": "git clean -xdf dist-electron output coverage",
+    "clean:all": "git clean -xdf dist-electron output coverage node_modules",
     "pretest": "tsx tools/config-signature.ts --all",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --config=jest.config.js"
   },
