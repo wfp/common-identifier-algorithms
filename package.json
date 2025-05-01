@@ -6,6 +6,7 @@
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
+    "watch": "tsc -w",
     "clean": "git clean -xdf dist-electron output coverage",
     "clean:all": "git clean -xdf dist-electron output coverage node_modules",
     "pretest": "tsx tools/config-signature.ts --all",

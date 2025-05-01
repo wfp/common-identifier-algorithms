@@ -33,7 +33,7 @@ export const REGION = "NWS";
 // and returns a hashed object
 class UscadiHasher extends BaseHasher {
 
-    constructor(config: Config.Options["algorithm"]) {
+    constructor(config: Config.CoreConfiguration["algorithm"]) {
         super(config);
     }
 
@@ -115,7 +115,7 @@ class UscadiHasher extends BaseHasher {
     }
 }
 
-export const makeHasher: makeHasherFunction = (config: Config.Options["algorithm"]) => {
+export const makeHasher: makeHasherFunction = (config: Config.CoreConfiguration["algorithm"]) => {
     switch (config.hash.strategy.toLowerCase()) {
         case 'sha256':
             return new UscadiHasher(config);

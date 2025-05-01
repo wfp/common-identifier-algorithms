@@ -19,7 +19,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readdirSync } from 'node:fs';
 
-import { generateConfigHash, attemptToReadTOMLData, validateConfig  } from 'common-identifier-algorithm-shared';
+import { generateConfigHash, attemptToReadTOMLData, validateConfigFile  } from 'common-identifier-algorithm-shared';
 import type { Config  } from 'common-identifier-algorithm-shared';
 import { existsSync } from 'node:fs';
 
@@ -59,12 +59,12 @@ type CheckResult = { name: string, shortCode: string, valid: boolean, message: s
 function checkConfigSignature(algoName: string, shortCode: string): CheckResult {
   console.log(`INFO: Checking config signature for algorithm '${algoName}', with shortCode '${shortCode}'`);
   const configPath = getConfigPath(algoName);
-  const config = attemptToReadTOMLData<Config.Options>(configPath, "utf-8");
+  const config = attemptToReadTOMLData<Config.FileConfiguration>(configPath, "utf-8");
   if (!config) {
     return { name: algoName, shortCode: shortCode, valid: false, message: `ERROR: could not read configuration file: ${configPath}` }
   }
 
-  const validationResult = validateConfig(config, shortCode);
+  const validationResult = validateConfigFile(config, shortCode);
   if (!!validationResult) {
     return { name: algoName, shortCode: shortCode, valid: false, message: `ERROR: could not validate configuration file: ${validationResult}` };
   }

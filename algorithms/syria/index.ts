@@ -20,7 +20,7 @@ import type { Config, Validator, makeHasherFunction } from 'common-identifier-al
 // USCADI implementation that takes the extracted ('static', 'to_translate', 'reference')
 // and returns a hashed object
 class SYRHasher extends BaseHasher {
-    constructor(config: Config.Options["algorithm"]) {
+    constructor(config: Config.CoreConfiguration["algorithm"]) {
         super(config);
     }
 
@@ -49,7 +49,7 @@ class SYRHasher extends BaseHasher {
 }
 
 export const REGION = "SYR";
-export const makeHasher: makeHasherFunction = (config: Config.Options["algorithm"]) => {
+export const makeHasher: makeHasherFunction = (config: Config.CoreConfiguration["algorithm"]) => {
     switch (config.hash.strategy.toLowerCase()) {
         case 'sha256':
             return new SYRHasher(config);

@@ -19,13 +19,13 @@ import { makeHasher } from "../index";
 import { transliterateWord } from "../engines/transliteration";
 import type { Config } from 'common-identifier-algorithm-shared';
 
-const TEST_CONFIG: Config.Options["algorithm"] ={
+const TEST_CONFIG: Config.CoreConfiguration["algorithm"] ={
     salt: { source: "STRING", value: "TEST_HASH" },
     hash: { strategy: "SHA256" },
     columns: { process: [], static: [], reference: [] }
 };
 
-function hasherWithConfig(cfg: Config.Options["algorithm"]) {
+function hasherWithConfig(cfg: Config.CoreConfiguration["algorithm"]) {
     return () => { return makeHasher(cfg); }
 }
 
@@ -52,7 +52,7 @@ test('transliterate with non-mapped char should return char', () => {
 });
 
 test('hashing data should result in a hash and a source', () => {
-    const config: Config.Options["algorithm"] ={
+    const config: Config.CoreConfiguration["algorithm"] ={
         salt: { source: "STRING", value: "TEST_HASH" },
         hash: { strategy: "SHA256" },
         columns: { static: ["a", "b"], process: ["fname", "lname"], reference: [ "ref1", "ref2" ]}
@@ -68,7 +68,7 @@ test('hashing data should result in a hash and a source', () => {
 })
 
 test('providing no reference should result in empty reference hash', () => {
-    const config: Config.Options["algorithm"] ={
+    const config: Config.CoreConfiguration["algorithm"] ={
         salt: { source: "STRING", value: "TEST_HASH" },
         hash: { strategy: "SHA256" },
         columns: { static: ["a", "b"], process: ["fname", "lname"], reference: []}
@@ -85,7 +85,7 @@ test('providing no reference should result in empty reference hash', () => {
 });
 
 test('providing an empty reference field should result in empty reference hash', () => {
-    const config: Config.Options["algorithm"] ={
+    const config: Config.CoreConfiguration["algorithm"] ={
         salt: { source: "STRING", value: "TEST_HASH" },
         hash: { strategy: "SHA256" },
         columns: { static: ["a", "b"], process: ["fname", "lname"], reference: [ "ref1", "ref2"]}

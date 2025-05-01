@@ -18,13 +18,13 @@
 import type { Config } from 'common-identifier-algorithm-shared';
 import { makeHasher } from '../index';
 
-const TEST_CONFIG: Config.Options["algorithm"] ={
+const TEST_CONFIG: Config.CoreConfiguration["algorithm"] ={
     salt: { source: "STRING", value: "TEST_HASH" },
     hash: { strategy: "SHA256" },
     columns: { process: [], static: [], reference: [] }
 };
 
-function hasherWithConfig(cfg: Config.Options["algorithm"]) {
+function hasherWithConfig(cfg: Config.CoreConfiguration["algorithm"]) {
     return () => { return makeHasher(cfg); }
 }
 
@@ -46,7 +46,7 @@ test('creation with good config should succeed', () => {
 });
 
 test('hashing data should result in a hash and a source', () => {
-    const config: Config.Options["algorithm"] ={
+    const config: Config.CoreConfiguration["algorithm"] ={
         salt: { source: "STRING", value: "TEST_HASH" },
         hash: { strategy: "SHA256" },
         columns: { static: ["a", "b", "c" ], process: [], reference: [] }
