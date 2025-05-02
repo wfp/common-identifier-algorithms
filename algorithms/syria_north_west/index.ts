@@ -26,9 +26,6 @@ let arabicSoundexEngine = makeArabicSoundexEngine();
 import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject, BaseHasher } from 'common-identifier-algorithm-shared';
 import type { Config, Validator, makeHasherFunction } from 'common-identifier-algorithm-shared';
 
-export const REGION = "NWS";
-
-
 // USCADI implementation that takes the extracted ('static', 'to_translate', 'reference')
 // and returns a hashed object
 class UscadiHasher extends BaseHasher {
@@ -115,6 +112,7 @@ class UscadiHasher extends BaseHasher {
     }
 }
 
+export const ALGORITHM_ID = "NWS";
 export const makeHasher: makeHasherFunction = (config: Config.CoreConfiguration["algorithm"]) => {
     switch (config.hash.strategy.toLowerCase()) {
         case 'sha256':

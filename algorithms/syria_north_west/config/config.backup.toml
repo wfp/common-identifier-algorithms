@@ -1,7 +1,7 @@
 [meta]
-region="NWS"
-version="1.0.0"
-signature="55a70c8a1516c0ac2252892562f4b532"
+id="NWS"
+version="1.1.0"
+signature="d30a3340b64e165cdbaca30107401415"
 
 [messages]
 terms_and_conditions="""

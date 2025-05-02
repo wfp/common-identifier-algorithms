@@ -28,7 +28,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const program = new Command()
   .option("--all")
   .option("--algorithm-name <ALGORITHM_NAME>", "The name of the algorithm to check, typically this is the directory name")
-  .option('--algorithm-short-code <ALGORITHM_SHORT_CODE>', 'The algorithm code AKA the region code')
+  .option('--algorithm-id <ALGORITHM_ID>', 'The algorithm id, typically found in config.meta.id')
   .action(parseArgs);
 
 program.parse();
@@ -44,8 +44,8 @@ function parseArgs() {
   const args = program.opts();;
   if (args.all) checkAllConfigSignatures();
   
-  else if (args.algorithmName && args.algorithmShortCode) {
-    const result = checkConfigSignature(args.algorithmName, args.algorithmShortCode);
+  else if (args.algorithmName && args.algorithmId) {
+    const result = checkConfigSignature(args.algorithmName, args.algorithmId);
     console.log("RESULTS: ", result);
     if (result.valid) console.log("Config signature valid 🙌");
     else throw new Error("❗CONFIG SIGNATURE INVALID, CHECK RESULTS");
@@ -80,8 +80,8 @@ async function checkAllConfigSignatures() {
   const checks: CheckResult[] = [];
   const algorithmDirectories = readdirSync(join(__dirname, "..", "algorithms"));
   for (let algoName of algorithmDirectories) {
-    const { REGION } = await import(`../algorithms/${algoName}/index`);
-    checks.push(checkConfigSignature(algoName, REGION));
+    const { ALGORITHM_ID } = await import(`../algorithms/${algoName}/index`);
+    checks.push(checkConfigSignature(algoName, ALGORITHM_ID));
   }
   console.log("RESULTS: ", checks);
   if (checks.every(check => check.valid)) console.log("INOF: All signatures valid 🙌");

@@ -48,7 +48,7 @@ class SYRHasher extends BaseHasher {
     }
 }
 
-export const REGION = "SYR";
+export const ALGORITHM_ID = "SYR";
 export const makeHasher: makeHasherFunction = (config: Config.CoreConfiguration["algorithm"]) => {
     switch (config.hash.strategy.toLowerCase()) {
         case 'sha256':
