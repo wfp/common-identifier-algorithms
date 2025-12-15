@@ -1,0 +1,216 @@
+[meta]
+id="COL"
+version="1.1.0"
+signature="dad50542be2ac988a3003cd9d0f42be5"
+
+[messages]
+terms_and_conditions="""
+<strong>Common Identifier Application</strong>
+<p>
+    <i>Copyright (C) 2024 World Food Programme</i>
+</p>
+<p>
+    This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+    License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any
+    later version.
+</p>
+<p>
+    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+</p>
+<p>
+    You should have received a copy of the GNU General Public License along with this program. If not, see <a href="https://www.gnu.org/licenses" target="_blank">gnu.org</a>.
+</p>
+<p>
+    World Food Programme (WFP) disclaims any responsibility for how the program is used. This Program may collect, 
+    store or otherwise process personal data provided by you and/or Users. World Food Programme represents that it has 
+    no access to these personal data and that such access is not technically feasible. Users are solely
+    responsible for ensuring their use of the program complies with all applicable norms and regulations, including
+    those on data privacy and protection, and obtaining necessary consents and security measures where required.
+</p>
+<p>
+    Any dispute, controversy, or claim arising out of or relating to the use of the program, including the
+    interpretation, application, or breach of this license, unless settled amicably, shall be finally resolved by
+    arbitration pursuant to the UNCITRAL Arbitration Rules. Nothing in or relating to this license shall be deemed a
+    waiver, express or implied, of any of the privileges and immunities enjoyed by World Food Programme.
+</p>
+"""
+
+error_in_config="""
+
+<p>The application encountered an error whilst attempting to load a configuration file.</p>
+
+<p>Please contact WFP support at <a href="mailto:Global.BuildingBlocks@wfp.org">Global.BuildingBlocks@wfp.org</a></p>
+"""
+
+error_in_salt="""
+<p>The application encountered an error whilst attempting to load your individual salt file.</p>
+
+<p>Please contact WFP support at <a href="mailto:Global.BuildingBlocks@wfp.org">Global.BuildingBlocks@wfp.org</a></p>
+"""
+
+[source]
+columns = [
+    { name = "Individual Reference", alias = "individual_reference" },
+    { name = "First Name", alias = "first_name" },
+    { name = "Last Name", alias = "last_name" },
+    { name = "Gender", alias = "gender" },
+    { name = "Date of Birth (yyyyMMdd)", alias = "dob" },
+    # By specifying the default when the column is missing the default value will be added
+    { name = "Document Type", alias = "document_type", default="" },
+    { name = "Document ID", alias = "document_id", default="" },
+    { name = "Organization", alias = "organization" },
+    { name = "Category", alias = "category" },
+    { name = "Currency", alias = "currency" },
+    { name = "Amount", alias = "amount" },
+    { name = "Start (yyyyMMdd)", alias = "start" },
+    { name = "End (yyyyMMdd)", alias = "end" },
+]
+
+[validations]
+
+"*" = [
+    { op = "max_field_length", value = 200 },
+]
+
+individual_reference = [
+    { op = "field_type", value = "string" },
+    { op = "regex_match", value = "[a-zA-Z0-9!\"#$%&'()*+\\-./:;?@[\\]^_{|}~]+", message="must only consist of alphanumeric characters and supported special characters" }
+]
+
+first_name = [
+    { op = "field_type", value = "string" },
+    # do we need a language check for Spanish?
+]
+
+last_name = [
+    { op = "field_type", value = "string" },
+]
+
+gender = [
+    { op = "field_type", value = "string" },
+    { op = "options", value = [ "M", "F" ],message="must be one of 'M' or 'F'"}
+]
+
+dob = [
+    # TODO: implement validators for dob
+    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd" },
+    { op = "date_diff", value = "-100Y:0" },
+]
+
+document_type = [
+    { op = "field_type", value = "string" },
+    { op = "options", value = [ "", "ID Card Type 1", "ID Card Type 2", "ID Card Type 3" ], message = "must be blank or one of the accepted identity cards" },
+    { op = "linked_field", target = "document_id" }
+]
+
+document_id = [
+    { op = "regex_match", value = '(?!.*\S)|[a-zA-Z0-9-_]+', message="must only consist of alphanumeric characters and supported special characters" },
+    { op = "linked_field", target = "document_type" }
+]
+
+# assistance columns
+organization = [
+    { op = "field_type", value = "string" },
+    { op = "min_field_length", value = 2 },
+    { op = "max_field_length", value = 10 },
+    { op = "same_value_for_all_rows" },
+]
+
+category = [
+    { op = "field_type", value = "string" },
+    { op = "min_field_length", value = 2 },
+    { op = "max_field_length", value = 15 },
+    { op = "same_value_for_all_rows" }
+]
+
+currency = [
+    { op = "field_type", value = "string" },
+    { op = "same_value_for_all_rows" },
+    { op = "regex_match", value = 'USD', message="must be USD" },
+]
+
+amount = [
+    { op = "min_value", value = 1 },
+    { op = "max_value", value = 20_000 },
+]
+
+start = [
+    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd" },
+    { op = "date_diff", value = "-12M:+2M", message = "must be within 1 year in the past or 2 months in the future"},
+]
+
+end = [
+    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd" },
+    { op = "date_field_diff", target = "start", value=":+12M", message="must be within a year of Start"},
+]
+
+
+[algorithm]
+
+[algorithm.columns]
+process = [
+    "first_name",
+    "last_name",
+]
+static = [
+    "gender",
+    "dob",
+]
+reference = [
+    "document_type",
+    "document_id"
+]
+
+[algorithm.hash]
+strategy = "SHA256"
+
+[algorithm.salt]
+source = "STRING"
+value = "TEMP_VALUE"
+
+[destination]
+columns = [
+    { name = "Common Identifier", alias = "common_identifier" },
+    { name = "DEV Common Identifier Raw", alias = "dev::common_identifier_raw" },
+    { name = "Organization", alias = "organization" },
+    { name = "Category", alias = "category" },
+    { name = "Currency", alias = "currency" },
+    { name = "Amount", alias = "amount" },
+    { name = "Start (yyyyMMdd)", alias = "start" },
+    { name = "End (yyyyMMdd)", alias = "end" },
+    { name = "Reference Identifier", alias = "reference_identifier" },
+    { name = "DEV Reference Identifier Raw", alias = "dev::reference_identifier_raw" },
+]
+
+postfix = "-OUTPUT"
+
+[destination_map]
+columns = [
+    { name = "Individual Reference", alias = "individual_reference" },
+    { name = "Common Identifier", alias = "common_identifier" },
+    { name = "DEV Common Identifier Raw", alias = "dev::common_identifier_raw" },
+    { name = "Reference Identifier", alias = "reference_identifier" },
+    { name = "DEV Reference Identifier Raw", alias = "dev::reference_identifier_raw" },
+]
+postfix = "-MAPPING"
+
+[destination_errors]
+columns = [
+    { name = "Errors", alias = "errors" },
+    { name = "Individual Reference", alias = "individual_reference" },
+    { name = "First Name", alias = "first_name" },
+    { name = "Last Name", alias = "last_name" },
+    { name = "Gender", alias = "gender" },
+    { name = "Date of Birth (yyyyMMdd)", alias = "dob" },
+    { name = "Document Type", alias = "document_type" },
+    { name = "Document ID", alias = "document_id" },
+    { name = "Organization", alias = "organization" },
+    { name = "Category", alias = "category" },
+    { name = "Currency", alias = "currency" },
+    { name = "Amount", alias = "amount" },
+    { name = "Start (yyyyMMdd)", alias = "start" },
+    { name = "End (yyyyMMdd)", alias = "end" },
+]
+postfix = "-ERRORS"
