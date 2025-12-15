@@ -40,7 +40,7 @@
     "watch": "tsc -w",
     "clean": "git clean -xdf dist-electron output coverage",
     "clean:all": "git clean -xdf dist-electron output coverage node_modules",
-    "pretest": "tsc tools/config-signature.ts --all",
+    "pretest": "tsx tools/config-signature.ts --all",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --config=jest.config.js"
   },
   "devDependencies": {
