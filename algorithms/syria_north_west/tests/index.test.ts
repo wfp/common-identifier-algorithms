@@ -17,7 +17,7 @@
 
 import { makeHasher } from "../index";
 import { transliterateWord } from "../engines/transliteration";
-import type { Config } from 'common-identifier-algorithm-shared';
+import type { Config } from '@wfp/common-identifier-algorithm-shared';
 
 const TEST_CONFIG: Config.CoreConfiguration["algorithm"] ={
     salt: { source: "STRING", value: "TEST_HASH" },

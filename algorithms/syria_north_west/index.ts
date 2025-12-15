@@ -23,8 +23,8 @@ import { doubleMetaphone } from './engines/double-metaphone';
 // the soundex engine we'll use
 let arabicSoundexEngine = makeArabicSoundexEngine();
 
-import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject, BaseHasher } from 'common-identifier-algorithm-shared';
-import type { Config, Validator, makeHasherFunction } from 'common-identifier-algorithm-shared';
+import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject, BaseHasher } from '@wfp/common-identifier-algorithm-shared';
+import type { Config, Validator, makeHasherFunction } from '@wfp/common-identifier-algorithm-shared';
 
 // USCADI implementation that takes the extracted ('static', 'to_translate', 'reference')
 // and returns a hashed object

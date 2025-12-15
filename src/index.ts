@@ -1,6 +1,6 @@
 // REPLACE ALL REFERENCES TO "_generic_hasher" WITH THE DESIRED ALGORITHM IN THE ALGORITHMS DIRECTORY.
 
-import { loadConfig, preprocessFile, processFile } from 'common-identifier-algorithm-shared';
+import { loadConfig, preprocessFile, processFile } from '@wfp/common-identifier-algorithm-shared';
 import { makeHasher, ALGORITHM_ID } from '../algorithms/_generic_hasher';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

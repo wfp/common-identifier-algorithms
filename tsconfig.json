@@ -5,9 +5,7 @@
     "lib": [ "ESNext", "DOM", "DOM.Iterable" ],
 
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
-    "noEmit": true,
     
     "strict": true,
     "skipLibCheck": true,
@@ -21,8 +19,13 @@
     "useDefineForClassFields": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
+
+    "outDir": "dist",
+    "rootDir": "algorithms",
+
+    "sourceMap": false,
+    "declaration": true
   },
-  "include": [ "**/*.ts" ],
+  "include": [ "algorithms/**/*" ],
   "exclude": ["node_modules", "tests", "dist", "tmp", "examples"]
 }

@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import type { Config } from 'common-identifier-algorithm-shared';
+import type { Config } from '@wfp/common-identifier-algorithm-shared';
 import { makeHasher } from '../index';
 
 const TEST_CONFIG: Config.CoreConfiguration["algorithm"] ={
