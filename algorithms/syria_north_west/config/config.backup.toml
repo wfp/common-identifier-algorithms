@@ -1,7 +1,7 @@
 [meta]
 id="NWS"
-version="1.1.0"
-signature="d30a3340b64e165cdbaca30107401415"
+version="1.2.2"
+signature="4e3a387c9d1c5beacafc8d699f2c89ac"
 
 [messages]
 terms_and_conditions="""
@@ -172,13 +172,6 @@ reference = [
 
 [algorithm.hash]
 strategy = "SHA256"
-
-[algorithm.salt]
-source = "FILE"
-validator_regex = "-----BEGIN PGP PUBLIC KEY BLOCK-----[A-Za-z0-9+/=\\s]+-----END PGP PUBLIC KEY BLOCK-----"
-
-[algorithm.salt.value]
-win32 = "$APPDATA/BuildingBlocks/SYR-NWS-PROD (440E1B46) – Public.asc"
 
 [destination]
 columns = [
