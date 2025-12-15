@@ -1,7 +1,7 @@
 [meta]
 id="COL"
 version="1.2.2"
-signature="6d2427f99017ad2a62af5e62f03474c7"
+signature="802794015ab892317c14a699bcb476ca"
 
 [messages]
 terms_and_conditions="""
@@ -165,10 +165,6 @@ reference = [
 
 [algorithm.hash]
 strategy = "SHA256"
-
-[algorithm.salt]
-source = "STRING"
-value = "TEMP_VALUE"
 
 [destination]
 columns = [
