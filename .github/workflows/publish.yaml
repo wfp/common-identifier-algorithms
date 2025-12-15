@@ -29,7 +29,9 @@ jobs:
           scope: "@wfp"
       
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+          npm install -g tsx
         env:
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
