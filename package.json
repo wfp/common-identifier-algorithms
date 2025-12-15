@@ -5,6 +5,13 @@
   "author": "World Food Programme",
   "license": "AGPL-3.0-or-later",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wfp/common-identifier-algorithms.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "exports": {
     "./generic": {
       "default": "./dist/_generic_hasher/index.js",
