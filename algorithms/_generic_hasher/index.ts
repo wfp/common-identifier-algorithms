@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
 import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject, BaseHasher } from '@wfp/common-identifier-algorithm-shared';
 import type { Config, Validator, makeHasherFunction } from '@wfp/common-identifier-algorithm-shared';
 
@@ -46,4 +49,8 @@ export const makeHasher: makeHasherFunction = (config: Config.CoreConfiguration[
         default:
             throw new Error(`Unknown hash strategy in config: '${config.hash.strategy}'`);
     }
+}
+export function getConfigPath(): string {
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+  return join(__dirname, 'config', 'config.backup.toml');
 }
