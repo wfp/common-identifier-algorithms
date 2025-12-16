@@ -32,16 +32,16 @@
   },
   "files": [
     "dist",
-    "algorithms/**/config/config.backup.toml",
     "README.md",
     "COPYING"
   ],
   "scripts": {
-    "build": "tsc",
     "watch": "tsc -w",
+    "build": "tsc",
+    "postbuild": "tsx tools/process-configuration-files.ts --all",
     "clean": "git clean -xdf dist coverage",
     "clean:all": "git clean -xdf dist coverage node_modules",
-    "pretest": "tsx tools/config-signature.ts --all",
+    "pretest": "tsx tools/process-configuration-files.ts --all --no-bundle",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --config=jest.config.js"
   },
   "devDependencies": {
