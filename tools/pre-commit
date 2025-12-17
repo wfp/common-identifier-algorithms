@@ -7,7 +7,7 @@
 #       To enable, copy this file to .git/hooks.
 
 if git diff --cached --name-only | grep -q '^algorithms/'; then
-  output=$(tsx tools/config-signature.ts --all 2>&1)
+  output=$(tsx tools/process-configuration-files.ts --all --no-bundle 2>&1)
 
   if [ $? -ne 0 ]; then
     echo "Pre-commit check failed. Commit aborted.";

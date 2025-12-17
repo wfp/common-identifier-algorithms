@@ -1,7 +1,7 @@
 [meta]
-id="NWS"
+id="COL"
 version="1.2.2"
-signature="4e3a387c9d1c5beacafc8d699f2c89ac"
+signature="802794015ab892317c14a699bcb476ca"
 
 [messages]
 terms_and_conditions="""
@@ -41,13 +41,13 @@ error_in_config="""
 
 <p>The application encountered an error whilst attempting to load a configuration file.</p>
 
-<p>Please contact WFP support at <a href="mailto:NWS.BuildingBlocks@wfp.org">NWS.BuildingBlocks@wfp.org</a></p>
+<p>Please contact WFP support at <a href="mailto:Global.BuildingBlocks@wfp.org">Global.BuildingBlocks@wfp.org</a></p>
 """
 
 error_in_salt="""
 <p>The application encountered an error whilst attempting to load your individual salt file.</p>
 
-<p>Please contact WFP support at <a href="mailto:NWS.BuildingBlocks@wfp.org">NWS.BuildingBlocks@wfp.org</a></p>
+<p>Please contact WFP support at <a href="mailto:Global.BuildingBlocks@wfp.org">Global.BuildingBlocks@wfp.org</a></p>
 """
 
 [source]
@@ -55,9 +55,8 @@ columns = [
     { name = "Individual Reference", alias = "individual_reference" },
     { name = "First Name", alias = "first_name" },
     { name = "Last Name", alias = "last_name" },
-    { name = "Father First Name", alias = "father_first_name" },
-    { name = "Mother First Name", alias = "mother_first_name" },
-    { name = "Year of Birth", alias = "dob_year" },
+    { name = "Gender", alias = "gender" },
+    { name = "Date of Birth (yyyyMMdd)", alias = "dob" },
     # By specifying the default when the column is missing the default value will be added
     { name = "Document Type", alias = "document_type", default="" },
     { name = "Document ID", alias = "document_id", default="" },
@@ -82,32 +81,27 @@ individual_reference = [
 
 first_name = [
     { op = "field_type", value = "string" },
-    { op = "language_check", value = "Arabic", message="is not Arabic"}
+    # do we need a language check for Spanish?
 ]
 
 last_name = [
     { op = "field_type", value = "string" },
-    { op = "language_check", value = "Arabic", message="is not Arabic"}
 ]
 
-father_first_name = [
+gender = [
     { op = "field_type", value = "string" },
-    { op = "language_check", value = "Arabic", message="is not Arabic"}
+    { op = "options", value = [ "M", "F" ],message="must be one of 'M' or 'F'"}
 ]
 
-mother_first_name = [
-    { op = "field_type", value = "string" },
-    { op = "language_check", value = "Arabic", message="is not Arabic"}
-]
-
-dob_year = [
-    { op = "min_value", value = 1901 },
-    { op = "max_value", value = "{{currentYear}}" }
+dob = [
+    # TODO: implement validators for dob
+    { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd" },
+    { op = "date_diff", value = "-100Y:0" },
 ]
 
 document_type = [
     { op = "field_type", value = "string" },
-    { op = "options", value = [ "", "NATIONAL_ID", "PERSONAL_ID", "LOCAL_COUNCIL_CARD" ], message = "must be blank or one of NATIONAL_ID, PERSONAL_ID, or LOCAL_COUNCIL_CARD" },
+    { op = "options", value = [ "", "ID Card Type 1", "ID Card Type 2", "ID Card Type 3" ], message = "must be blank or one of the accepted identity cards" },
     { op = "linked_field", target = "document_id" }
 ]
 
@@ -159,11 +153,10 @@ end = [
 process = [
     "first_name",
     "last_name",
-    "father_first_name",
-    "mother_first_name",
 ]
 static = [
-    "dob_year"
+    "gender",
+    "dob",
 ]
 reference = [
     "document_type",
@@ -175,25 +168,29 @@ strategy = "SHA256"
 
 [destination]
 columns = [
-    { name = "Common Identifier", alias = "USCADI" },
+    { name = "Common Identifier", alias = "common_identifier" },
+    { name = "DEV Common Identifier Raw", alias = "dev::common_identifier_raw" },
     { name = "Organization", alias = "organization" },
     { name = "Category", alias = "category" },
     { name = "Currency", alias = "currency" },
     { name = "Amount", alias = "amount" },
     { name = "Start (yyyyMMdd)", alias = "start" },
     { name = "End (yyyyMMdd)", alias = "end" },
-    { name = "Reference Identifier", alias = "document_hash" },
+    { name = "Reference Identifier", alias = "reference_identifier" },
+    { name = "DEV Reference Identifier Raw", alias = "dev::reference_identifier_raw" },
 ]
 
-postfix = "-OUTPUT-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
+postfix = "-OUTPUT"
 
 [destination_map]
 columns = [
     { name = "Individual Reference", alias = "individual_reference" },
-    { name = "Common Identifier", alias = "USCADI" },
-    { name = "Reference Identifier", alias = "document_hash" },
+    { name = "Common Identifier", alias = "common_identifier" },
+    { name = "DEV Common Identifier Raw", alias = "dev::common_identifier_raw" },
+    { name = "Reference Identifier", alias = "reference_identifier" },
+    { name = "DEV Reference Identifier Raw", alias = "dev::reference_identifier_raw" },
 ]
-postfix = "-MAPPING-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
+postfix = "-MAPPING"
 
 [destination_errors]
 columns = [
@@ -201,9 +198,8 @@ columns = [
     { name = "Individual Reference", alias = "individual_reference" },
     { name = "First Name", alias = "first_name" },
     { name = "Last Name", alias = "last_name" },
-    { name = "Father First Name", alias = "father_first_name" },
-    { name = "Mother First Name", alias = "mother_first_name" },
-    { name = "Year of Birth", alias = "dob_year" },
+    { name = "Gender", alias = "gender" },
+    { name = "Date of Birth (yyyyMMdd)", alias = "dob" },
     { name = "Document Type", alias = "document_type" },
     { name = "Document ID", alias = "document_id" },
     { name = "Organization", alias = "organization" },
@@ -213,4 +209,4 @@ columns = [
     { name = "Start (yyyyMMdd)", alias = "start" },
     { name = "End (yyyyMMdd)", alias = "end" },
 ]
-postfix = "-ERRORS-NWS-1.0.8-{{yyyy-MM-dd--HH-mm-ss}}"
+postfix = "-ERRORS"

@@ -13,56 +13,33 @@
 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-import { transliterateWord } from './engines/transliteration';
-import ar2SafeBwMap from './charmaps/transliteration-mapping-ar2safebw';
-
-import { makeArabicSoundexEngine } from './engines/arabic-soundex';
-import { doubleMetaphone } from './engines/double-metaphone';
-
-// the soundex engine we'll use
-let arabicSoundexEngine = makeArabicSoundexEngine();
-
 import { joinFieldsForHash, cleanValueList, extractAlgoColumnsFromObject, BaseHasher } from '@wfp/common-identifier-algorithm-shared';
 import type { Config, Validator, makeHasherFunction } from '@wfp/common-identifier-algorithm-shared';
+import { parseDateString, toExcelSerial } from './utils';
 
-// USCADI implementation that takes the extracted ('static', 'to_translate', 'reference')
+// CID implementation that takes the extracted ('static', 'to_translate', 'reference')
 // and returns a hashed object
-class UscadiHasher extends BaseHasher {
+class CidHasher extends BaseHasher {
 
     constructor(config: Config.CoreConfiguration["algorithm"]) {
         super(config);
     }
 
-    // Generates a transliteration, metaphone and soundex for a string
-    private translateValue = (value: string) => {
-        // clean the column value
-        let cleanedValue = this.cleanNameColumn(value);
-        // transliterate the value
-        const transliteratedStr = transliterateWord(cleanedValue, ar2SafeBwMap);
-        // package the output
-        return {
-            transliterated: transliteratedStr,
-            transliteratedMetaphone: doubleMetaphone(transliteratedStr)[0],
-            soundex: arabicSoundexEngine.soundex(cleanedValue)
-        }
-    }
-
     // cleans a single value in a name column (whitespace and other)
     private cleanNameColumn = (value: string) => {
         // remove all whitespace and digits from all name fields
-        let cleaned = value.replaceAll(/[\s]+/g, "")
-            .replaceAll(/[\d]+/g, "")
-        // for names with Arabic letters, run the following regex replacements
-        // ة becomes ه
-        cleaned = cleaned.replaceAll("ة", "ه");
-        // any of: أ  ئ ؤ ء ى becomes ا
-        cleaned = cleaned.replaceAll(/أئؤءى/g, "ا");
+        let cleaned = value
+            .replaceAll(/[\s]+/g, "")
+            .replaceAll(/[\d]+/g, "");
 
-        return cleaned;
+            
+        // TODO: any other cleans required?
+
+        // take the first 3 letters of the name
+        return cleaned.slice(0, 3).toUpperCase();
     }
 
     // Takes the output of `extractAlgoColumnsFromObject` (extracted properties) and
@@ -70,24 +47,18 @@ class UscadiHasher extends BaseHasher {
     // concatednated as per the USCADI spec
     private composeHashSource = (extractedObj: Config.AlgorithmColumns) => {
         // the static fields stay the same
-        // while the to_translate fields are translated
+        // while the to_translate fields are process as per their algorithm specification
 
-        let translatedValues = extractedObj.process.map(this.translateValue);
-        let staticValues = extractedObj.static;
-
-        // The original USCADI algorithm seems to concatenate the translated values
-        // by grouping them by concatenating per-type:
-        // [_mp1_value, _mp2_value, ... , _sx1_value, _sx2_value, ...]
-        let {metaphone, soundex} = translatedValues.reduce((memo, val) => {
-            memo.metaphone.push(val.transliteratedMetaphone);
-            memo.soundex.push(val.soundex);
-
-            return memo;
-        }, { metaphone:[], soundex:[] } as { metaphone: string[], soundex: string[] })
+        let processedValues = extractedObj.process.map(this.cleanNameColumn);
+        let staticValues = extractedObj.static.map(val => {
+            const d = parseDateString(val);
+            if (d && typeof d !== "string") return toExcelSerial(d);
+            else return d;
+        });
 
         // concat them
         // TODO: check the order
-        let concatenated = joinFieldsForHash(cleanValueList(staticValues.concat(metaphone, soundex)));
+        let concatenated = joinFieldsForHash(cleanValueList(processedValues.concat(staticValues)));
 
         return concatenated;
     }
@@ -109,17 +80,19 @@ class UscadiHasher extends BaseHasher {
         const toBeHashed = this.composeHashSource(extractedObj);
         const toBeHashedRef = this.composeReferenceHashSource(extractedObj);
         return {
-            "USCADI": toBeHashed.length > 0 ? this.generateHashForValue(toBeHashed) : "",
-            "document_hash": toBeHashedRef.length > 0 ? this.generateHashForValue(toBeHashedRef): "",
+            "common_identifier": toBeHashed.length > 0 ? this.generateHashForValue(toBeHashed) : "",
+            "reference_identifier": toBeHashedRef.length > 0 ? this.generateHashForValue(toBeHashedRef): "",
+            "dev::common_identifier_raw": toBeHashed,
+            "dev::reference_identifier_raw": toBeHashedRef,
         }
     }
 }
 
-export const ALGORITHM_ID = "NWS";
+export const ALGORITHM_ID = "COL";
 export const makeHasher: makeHasherFunction = (config: Config.CoreConfiguration["algorithm"]) => {
     switch (config.hash.strategy.toLowerCase()) {
         case 'sha256':
-            return new UscadiHasher(config);
+            return new CidHasher(config);
         default:
             throw new Error(`Unknown hash strategy in config: '${config.hash.strategy}'`);
     }

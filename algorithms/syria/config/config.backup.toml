@@ -1,7 +1,7 @@
 [meta]
 id="SYR"
-version="1.2.0"
-signature="add4ebe7c9560e4c6d090406ff57e5c1"
+version="1.2.2"
+signature="982f1b7b402e30f0fa68506a12518062"
 
 [messages]
 
@@ -120,14 +120,6 @@ reference = []
 
 [algorithm.hash]
 strategy = "SHA256"
-
-[algorithm.salt]
-source = "FILE"
-validator_regex = "-----BEGIN PGP PUBLIC KEY BLOCK-----[A-Za-z0-9+/=\\s]+-----END PGP PUBLIC KEY BLOCK-----"
-
-
-[algorithm.salt.value]
-win32 = "$APPDATA\\BuildingBlocks\\SYR-GOS-PROD (FC14D1D5) – Public.asc"
 
 [destination]
 columns = [

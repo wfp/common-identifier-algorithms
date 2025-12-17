@@ -15,12 +15,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Command } from '@commander-js/extra-typings';
-import { join, dirname } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readdirSync } from 'node:fs';
+import { cpSync, readdirSync } from 'node:fs';
 
-import { generateConfigHash, attemptToReadTOMLData, validateConfigFile  } from 'common-identifier-algorithm-shared';
-import type { Config  } from 'common-identifier-algorithm-shared';
+import { generateConfigHash, attemptToReadTOMLData, validateConfigFile  } from '@wfp/common-identifier-algorithm-shared';
+import type { Config } from '@wfp/common-identifier-algorithm-shared';
 import { existsSync } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -29,6 +29,7 @@ const program = new Command()
   .option("--all")
   .option("--algorithm-name <ALGORITHM_NAME>", "The name of the algorithm to check, typically this is the directory name")
   .option('--algorithm-id <ALGORITHM_ID>', 'The algorithm id, typically found in config.meta.id')
+  .option('--no-bundle', 'Should the backup configuration file be bundled in the build directory?')
   .action(parseArgs);
 
 program.parse();
@@ -40,21 +41,35 @@ function getConfigPath(algoName: string) {
   return configPath;
 }
 
-function parseArgs() {
-  const args = program.opts();;
-  if (args.all) checkAllConfigSignatures();
-  
+async function parseArgs() {
+  const args = program.opts();
+  console.log(args);
+  if (args.all) await processAllConfigs();
+
   else if (args.algorithmName && args.algorithmId) {
     const result = checkConfigSignature(args.algorithmName, args.algorithmId);
     console.log("RESULTS: ", result);
     if (result.valid) console.log("Config signature valid 🙌");
     else throw new Error("❗CONFIG SIGNATURE INVALID, CHECK RESULTS");
+
+    if (args.bundle) await copyConfigFile(args.algorithmName);
   }
   
   else console.log(program.usage());
 }
 
 type CheckResult = { name: string, shortCode: string, valid: boolean, message: string }
+
+async function copyConfigFile(algoName: string) {
+  console.log(`INFO: Copying config file for algorithm '${algoName}'`);
+  const importCheck = await import(`../algorithms/${algoName}/index`);
+
+  const src = resolve(`algorithms/${algoName}/config`);
+  const dest = resolve(`dist/${algoName}/config`);
+
+  cpSync(src, dest, { recursive: true });
+  return { name: algoName, shortCode: importCheck.ALGORITHM_ID, valid: true, message: `COPIED BACKUP CONFIG` };
+}
 
 function checkConfigSignature(algoName: string, shortCode: string): CheckResult {
   console.log(`INFO: Checking config signature for algorithm '${algoName}', with shortCode '${shortCode}'`);
@@ -75,15 +90,18 @@ function checkConfigSignature(algoName: string, shortCode: string): CheckResult 
   } else return { name: algoName, shortCode: shortCode, valid: true, message: `GENERATED HASH: ${hash}` };
 }
 
-async function checkAllConfigSignatures() {
+async function processAllConfigs() {
   console.log("INFO: Checking config signatures for all available algorithms");
   const checks: CheckResult[] = [];
   const algorithmDirectories = readdirSync(join(__dirname, "..", "algorithms"));
   for (let algoName of algorithmDirectories) {
     const { ALGORITHM_ID } = await import(`../algorithms/${algoName}/index`);
-    checks.push(checkConfigSignature(algoName, ALGORITHM_ID));
+    const check = checkConfigSignature(algoName, ALGORITHM_ID);
+    checks.push(check);
+
+    if (check.valid && program.opts().bundle) await copyConfigFile(algoName);
   }
   console.log("RESULTS: ", checks);
-  if (checks.every(check => check.valid)) console.log("INOF: All signatures valid 🙌");
+  if (checks.every(check => check.valid)) console.log("INF): All signatures valid 🙌");
   else throw new Error("ERROR: ❗CONFIG SIGNATURES INVALID, CHECK RESULTS");
 }

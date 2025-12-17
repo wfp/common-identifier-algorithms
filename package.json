@@ -1,15 +1,47 @@
 {
-  "name": "common-identifier-algorithm-shared",
-  "version": "1.1.1",
+  "name": "@wfp/common-identifier-algorithms",
+  "version": "2.1.0",
   "description": "Generate psuedonymous identifiers from tabular data",
   "author": "World Food Programme",
   "license": "AGPL-3.0-or-later",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wfp/common-identifier-algorithms.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "exports": {
+    "./generic": {
+      "default": "./dist/_generic_hasher/index.js",
+      "types": "./dist/_generic_hasher/index.d.js"
+    },
+    "./colombia": {
+      "default": "./dist/colombia/index.js",
+      "types": "./dist/colombia/index.d.js"
+    },
+    "./syria": {
+      "default": "./dist/syria/index.js",
+      "types": "./dist/syria/index.d.js"
+    },
+    "./syria_north_west": {
+      "default": "./dist/syria_north_west/index.js",
+      "types": "./dist/syria_north_west/index.d.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "COPYING"
+  ],
   "scripts": {
     "watch": "tsc -w",
-    "clean": "git clean -xdf dist-electron output coverage",
-    "clean:all": "git clean -xdf dist-electron output coverage node_modules",
-    "pretest": "tsx tools/config-signature.ts --all",
+    "build": "tsc",
+    "postbuild": "tsx tools/process-configuration-files.ts --all",
+    "clean": "git clean -xdf dist coverage",
+    "clean:all": "git clean -xdf dist coverage node_modules",
+    "pretest": "tsx tools/process-configuration-files.ts --all --no-bundle",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --config=jest.config.js"
   },
   "devDependencies": {
@@ -23,6 +55,6 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "common-identifier-algorithm-shared": "github:wfp/common-identifier-algorithm-shared"
+    "@wfp/common-identifier-algorithm-shared": "^2.0.0"
   }
 }

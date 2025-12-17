@@ -1,6 +1,6 @@
 // REPLACE ALL REFERENCES TO "_generic_hasher" WITH THE DESIRED ALGORITHM IN THE ALGORITHMS DIRECTORY.
 
-import { loadConfig, preprocessFile, processFile } from 'common-identifier-algorithm-shared';
+import { loadConfig, preprocessFile, processFile } from '@wfp/common-identifier-algorithm-shared';
 import { makeHasher, ALGORITHM_ID } from '../algorithms/_generic_hasher';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,8 +13,8 @@ const OUTPUT_PATH = join(__dirname, '..', 'output', 'output.csv');
 const VALIDATION_ERRORS_PATH = join(__dirname, 'output', 'validation_errors.csv');
 
 // load configuration file
-const configLoadResult = loadConfig(CONFIG_PATH, ALGORITHM_ID);
-if (!configLoadResult.success) throw new Error('unable to load configuration file.');
+const configLoadResult = loadConfig({ configPath: CONFIG_PATH, algorithmId: ALGORITHM_ID, usingUI: false, validateConfig: true });
+if (!configLoadResult.success) throw new Error(`[ERROR] Unable to load configuration file: ${configLoadResult.error}`);
 
 // validate the input file against all configured validation rules.
 const preprocessResult = await preprocessFile({

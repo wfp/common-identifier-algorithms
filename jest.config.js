@@ -1,6 +1,7 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 export default {
     // [...]
+    roots: [ "algorithms" ],
     extensionsToTreatAsEsm: ['.ts'],
     moduleFileExtensions: ["ts", "js"],
     moduleNameMapper: {
