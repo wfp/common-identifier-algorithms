@@ -1,7 +1,7 @@
 [meta]
 id="SYR"
-version="1.2.2"
-signature="982f1b7b402e30f0fa68506a12518062"
+version="2.1.3"
+signature="3c68376296aae98d05620452f9705d7e"
 
 [messages]
 
@@ -120,6 +120,10 @@ reference = []
 
 [algorithm.hash]
 strategy = "SHA256"
+
+[post_processing]
+[post_processing.encryption]
+recipient = "CF1C879BD574224D6AEABCB68D8A69D5FC14D1D5" # BB SYR Production public key fingerprint
 
 [destination]
 columns = [

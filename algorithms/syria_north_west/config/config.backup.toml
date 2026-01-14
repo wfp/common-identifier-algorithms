@@ -1,7 +1,7 @@
 [meta]
 id="NWS"
-version="1.2.2"
-signature="4e3a387c9d1c5beacafc8d699f2c89ac"
+version="2.1.3"
+signature="b35d29da0ce144bea614ca1aae9a5da6"
 
 [messages]
 terms_and_conditions="""
@@ -172,6 +172,10 @@ reference = [
 
 [algorithm.hash]
 strategy = "SHA256"
+
+[post_processing]
+[post_processing.encryption]
+recipient = "5A42A8421D19427562C5DEBE0CC75DCC440E1B46" # BB NWS Production public key fingerprint
 
 [destination]
 columns = [
