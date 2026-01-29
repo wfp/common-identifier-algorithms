@@ -1,7 +1,7 @@
 [meta]
 id="ANY"
 version="1.2.2"
-signature="83160fcc1f632198e2cb0fcff6fa61a5"
+signature="b56eed2a40b20f779e0f943a5e0d9804"
 
 [messages]
 
@@ -122,14 +122,16 @@ columns = [
     { name = "Start (yyyyMMdd)",  alias = "start" },
     { name = "End (yyyyMMdd)",    alias = "end" },
 ]
-postfix = "-OUTPUT-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
+prefix = "OUTPUT-"
+postfix = "-{{yyyyMMddHHmm}}"
 
 [destination_map]
 columns = [
     { name = "ID",       alias = "id" },
     { name = "Common Identifier", alias = "hashed_id" }
 ]
-postfix = "-MAPPING-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
+prefix = "MAPPING-"
+postfix = "-{{yyyyMMddHHmm}}"
 
 [destination_errors]
 columns = [
@@ -142,4 +144,5 @@ columns = [
     { name = "Start (yyyyMMdd)",  alias = "start" },
     { name = "End (yyyyMMdd)",    alias = "end" },
 ]
-postfix = "-ERRORS-0.0.9-{{yyyy-MM-dd--HH-mm-ss}}"
+prefix = "ERRORS-"
+postfix = "-{{yyyyMMddHHmm}}"
