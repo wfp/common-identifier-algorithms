@@ -1,7 +1,7 @@
 [meta]
 id="SYR"
-version="2.1.5"
-signature="eaf70af3cfa778bf3ca8f6da23164cf7"
+version="2.1.6"
+signature="b5493fb388d207b7fa2ac8e46b639d63"
 
 [messages]
 
@@ -21,12 +21,12 @@ terms_and_conditions="""
     more details.
 </p>
 <p>
-    You should have received a copy of the GNU General Public License along with this program. If not, see 
+    You should have received a copy of the GNU General Public License along with this program. If not, see
     <a href="https://www.gnu.org/licenses" target="_blank">gnu.org</a>.
 </p>
 <p>
-    World Food Programme (WFP) disclaims any responsibility for how the program is used. This Program may collect, 
-    store or otherwise process personal data provided by you and/or Users. World Food Programme represents that it has 
+    World Food Programme (WFP) disclaims any responsibility for how the program is used. This Program may collect,
+    store or otherwise process personal data provided by you and/or Users. World Food Programme represents that it has
     no access to these personal data and that such access is not technically feasible. Users are solely
     responsible for ensuring their use of the program complies with all applicable norms and regulations, including
     those on data privacy and protection, and obtaining necessary consents and security measures where required.
@@ -101,12 +101,10 @@ amount = [
 
 start = [
     { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd, e.g. 20240301" }, # yyyyMMdd
-    { op = "date_diff", value = "-12M:+2M", message = "must be within 1 year in the past or 2 months in the future"},
 ]
 
 end = [
     { op = "regex_match", value = '((?:19|20)\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12]\d|3[01]))', message="must be in the format of yyyyMMdd, e.g. 20240301"  }, # yyyyMMdd
-    { op = "date_field_diff", target = "start", value=":+12M", message="must be within a year of Start"},
 ]
 
 [algorithm]
